@@ -1,0 +1,103 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background-color: #f4f6f8;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: url(../../assets/bg.jpg);
+  background-size: cover;
+}
+
+.title {
+  /* text-align: center; */
+  vertical-align: middle;
+  margin-bottom: 12px;
+}
+
+.icon {
+  width: 48px;
+  height: 48px;
+  vertical-align: middle;
+  background: url(../../assets/icon.png);
+  background-size: cover;
+  margin: auto;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 添加阴影 */
+  border-radius: 12px; /* 可选：略微圆角，更柔和 */
+  display: inline-block;
+  margin-right: 8px;
+}
+
+.title h1 {
+  vertical-align: middle;
+  /* flex: 1; */
+  display: inline-block;
+  margin: 0 ;
+  line-height: 48px;
+}
+
+.login-container {
+  background-color: #fff;
+  padding: 24px 24px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  width: 320px;
+}
+
+h1 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+label {
+  display: block;
+  font-size: 14px;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  box-sizing: border-box;
+}
+
+input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: #007aff; /* 现代浏览器支持 */
+  cursor: pointer;
+}
+
+button {
+  width: 100%;
+  padding: 12px;
+  font-size: 15px;
+  background-color: #007aff;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+button:hover {
+  background-color: #006ae6;
+}
+
+.error {
+  color: red;
+  margin-top: 10px;
+  font-size: 12px;
+  text-align: center;
+}

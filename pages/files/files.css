@@ -1,0 +1,1079 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background-color: #f4f6f8;
+}
+
+ul, li {
+
+}
+
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #fff;
+  padding: 12px 20px;
+  border-bottom: 1px solid #eee;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  height: 32px; /* 设定固定高度，方便下方内容留白 */
+}
+
+#userInfo {
+  font-size: 14px;
+  color: #333;
+}
+
+#userInfo i {
+  font-size: 18px;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+
+#logoutBtn {
+  padding: 6px 14px;
+  font-size: 13px;
+  background-color: #f44336;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+#logoutBtn:hover {
+  background-color: #d32f2f;
+}
+
+/* 主容器 */
+.main-container {
+  display: flex;
+  flex-direction: row;
+  padding-top: 57px;
+  height: calc(100vh - 57px);
+  background-color: #f5f7fa;
+  overflow: hidden;
+}
+
+.resizerBox {
+  position: relative;
+  width: 0;
+  height: 100%;
+}
+
+.resizer {
+  position: absolute;
+  top: 50%;                 /* 垂直居中 */
+  transform: translateY(-50%);
+  left: -6px; /* 让它居中于边界线 */
+  width: 12px;
+  height: 32px;
+  background-color: #efefef;
+  border: 2px solid #ddd;
+  border-radius: 100px;
+  cursor: col-resize;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+  user-select: none;
+  box-sizing: border-box;
+}
+
+.resizer:hover {
+  background-color: #0078d4;
+  border-color: #0078d4;
+}
+
+.resizer:active {
+  background-color: #0078d4;
+  border-color: #0078d4;
+  box-shadow: 0 0 8px rgba(48, 96, 255, 0.3);
+}
+
+/* 添加一个竖线或图标在按钮中央作为视觉提示 */
+.resizer::before {
+  content: "";
+  width: 2px;
+  height: 60%;
+  background-color: #ddd;
+  border-radius: 1px;
+}
+
+.resizer:hover ::before {
+  background-color: #0078d4;
+}
+
+/* 左侧 sidebar */
+.sidebar {
+  width: 260px;
+  background: #fff;
+  border-right: 1px solid #ddd;
+  display: flex;
+  flex-direction: column;
+  min-width: 200px;
+  max-width: 600px;
+  /* background-color: #f4f4f4; */
+  overflow: auto;
+}
+
+/* sidebar header */
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  padding: 10px 4px;
+  border-bottom: 1px solid #eee;
+}
+
+.sidebar-header i {
+  padding: 8px;
+  font-size: 18px;
+  border-radius: 4px;
+}
+
+.sidebar-header i:hover {
+  background-color: #f6f8fa;
+  color: #0969da;
+}
+
+#backBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 20px;
+  color: #555;
+  margin-right: 8px;
+}
+
+.bucket-name {
+  flex: 1;
+  font-weight: 600;
+  font-size: 14px;
+  color: #333;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 文件夹树形结构 */
+.folder-tree {
+  flex: 1;
+  overflow-y: auto;
+  font-size: 14px;
+  color: #333;
+}
+
+.folder-tree > ul {
+  padding-left: 0 !important;
+  position: relative;
+}
+
+.folder-tree > ul::before {
+  display: none;
+}
+
+.folder-tree ul,
+.folder-tree li {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}.folder-tree ul {
+  list-style: none;
+  margin: 0;
+  padding-left: 20px; /* 左缩进，留出竖线空间 */
+  position: relative;
+}
+
+/* 竖线： ul 左侧 */
+.folder-tree ul::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 6px; /* 竖线位置 */
+  width: 2px;
+  height: 100%;
+  background-color: #ccc;
+}
+
+/* li 相对定位，方便添加横线和圆点 */
+.folder-li {
+  position: relative;
+  padding-left: 40px; /* 给横线和图标留空间 */
+  margin: 4px 0;
+}
+
+/* 横线：连接竖线到图标 */
+.folder-li::before {
+  content: '';
+  position: absolute;
+  top: 15.5px;
+  left: 8px;       /* 调整到图标左边 */
+  width: 8px;
+  height: 2px;
+  background-color: #ccc;
+  z-index: 0;      /* 横线层级较低 */
+}
+
+/* 圆点，标记节点 */
+.folder-li::after {
+  display: none;
+}
+
+/* 取消根节点的竖线 */
+.folder-tree > ul::before {
+  display: none;
+}
+
+/* 取消根节点 li 的横线和圆点 */
+.folder-tree > ul > .folder-li::before,
+.folder-tree > ul > .folder-li::after {
+  display: none;
+}
+
+/* 文件夹项 */
+.folder-item {
+  display: flex;
+  align-items: center;
+  padding: 6px 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  gap: 6px;
+  background: white;
+  box-sizing: border-box;
+  border: 1px solid transparent;
+}
+
+.folder-item.active {
+  background-color: #cce5ff; /* 选中高亮色 */
+}
+
+.folder-item:hover {
+  background-color: #eaf3ff;
+}
+
+.folder-item.right-clicked {
+  border: 1px solid #0969da;
+}
+
+/* 图标 */
+.toggle-icon {
+  position: relative;  /* 建立层级上下文 */
+  z-index: 1;          /* 保证图标在横线之上 */
+  display: inline-flex;
+  width: 20px;
+  justify-content: center;
+  /* margin-right: 6px; */
+  padding-left: 12px;
+}
+
+/* 文件夹名称 */
+.folder-item span:last-child {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 子目录容器缩进 */
+.folder-children {
+  margin-left: 20px;
+}
+
+.folder-item.active span {
+  color: #007bff; /* 鲜艳蓝色 */
+  font-weight: 600; /* 稍微加粗 */
+}
+
+/* ------------------------------------------------------------ */
+
+.context-menu {
+  background: #fff;
+  border: 1px solid #d0d7de;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  width: 180px;
+  z-index: 9999;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  font-size: 14px;
+  color: #24292f;
+  overflow: hidden;
+}
+
+.context-menu ul {
+  list-style: none;
+  margin: 0;
+  padding: 4px 0;
+}
+
+.context-menu li {
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  user-select: none;
+}
+
+.context-menu li:hover {
+  background-color: #f6f8fa;
+  color: #0969da;
+}
+
+.context-menu li i {
+  padding-right: 8px;
+  font-size: 14px;
+}
+
+
+.modal {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+}
+
+.modal-content {
+  background: #fff;
+  padding: 24px 28px;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  min-width: 320px;
+  max-width: 400px;
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.modal-content h3 {
+  margin: 0 0 18px 0;
+  font-weight: 700;
+  font-size: 20px;
+  color: #222;
+  user-select: none;
+}
+
+.modal-content input[type="text"] {
+  width: 100%;
+  padding: 10px 14px;
+  font-size: 15px;
+  border: 1.5px solid #ccc;
+  border-radius: 8px;
+  outline: none;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  box-sizing: border-box;
+}
+
+.modal-content input[type="text"]:focus {
+  border-color: #3b82f6; /* 蓝色 */
+  box-shadow: 0 0 8px rgba(59, 130, 246, 0.4);
+}
+
+.tags {
+  margin: 16px 0 24px 0;
+}
+
+.tag {
+  display: inline-block;
+  background-color: #e0f0ff;
+  color: #0078d4;
+  font-weight: 600;
+  font-size: 13px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  cursor: pointer;
+  user-select: none;
+  margin-right: 10px;
+  transition: background-color 0.25s, color 0.25s;
+}
+
+.tag:hover {
+  background-color: #0078d4;
+  color: #fff;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 14px;
+}
+
+.modal-actions button {
+  padding: 10px 20px;
+  font-size: 15px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.25s;
+}
+
+/* 覆盖 modal 遮罩层样式：去除阴影，只用半透明背景 */
+#confirmModal.modal {
+  background: rgba(0,0,0,0.25);
+  box-shadow: none !important;
+}
+
+/* 弹窗主体 */
+#confirmModal .modal-content {
+  background: #fff;
+  padding: 20px 28px;
+  border-radius: 10px;
+  border: 1.5px solid #bbb;
+  box-shadow: none !important;
+  min-width: 320px;
+  max-width: 380px;
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* 标题文字 */
+#confirmModal #confirmMessage {
+  font-size: 16px;
+  color: #333;
+  margin: 0;
+  user-select: none;
+}
+
+/* 按钮容器 */
+#confirmModal .modal-actions {
+  margin-top: 16px;
+  text-align: right;
+  display: flex;
+  justify-content: flex-end;
+  gap: 14px;
+}
+
+/* 按钮通用样式 */
+#confirmModal button {
+  padding: 10px 22px;
+  font-size: 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  user-select: none;
+  border: none;
+  transition: background-color 0.25s;
+}
+
+/* 取消按钮 */
+#confirmCancelBtn {
+  background-color: #f0f0f0;
+  color: #555;
+}
+
+#confirmCancelBtn:hover {
+  background-color: #d6d6d6;
+}
+
+/* 确定按钮 */
+#confirmOkBtn {
+  background-color: #f44336;
+  color: white;
+}
+
+#confirmOkBtn:hover {
+  background-color: #d32f2f;
+}
+
+/* ------------------------------------------------------------ */
+
+#refreshFolderBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  color: #555;
+}
+
+#refreshFolderBtn:hover {
+  color: #222;
+}
+
+#refreshFolderBtn,
+#addRootFolderBtn {
+  padding: 0;
+  width: 34px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  color: #555;
+}
+
+#refreshFolderBtn:hover,
+#addRootFolderBtn:hover {
+  color: #222;
+}
+
+
+
+
+/* ------------------------------------------------------------ */
+
+
+/* 右侧内容区域 */
+/* content-area 标题区域样式 */
+.content-area {
+  flex: 1;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* 防止内部溢出滚动条覆盖 footer */
+  border-left: 1px solid #ddd;
+}
+
+/* content-area header 样式 */
+.content-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 46px; /* 与 sidebar-header 一致 */
+  padding: 0 10px;
+  border-bottom: 1px solid #eee;
+  background: #fff;
+  box-sizing: border-box;
+}
+
+.content-title {
+  font-weight: 600;
+  font-size: 14px;
+  color: #333;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.content-actions button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 20px;
+  color: #555;
+  margin-left: 8px;
+}
+
+/* 文件内容 body 占满剩余高度 */
+.content-body {
+  flex: 1;
+  padding: 10px;
+  overflow-y: auto;
+}
+
+.content-body ::-webkit-scrollbar {
+  position: fixed;
+  right: 0;
+  top: 0;
+}
+
+.content-footer {
+  background: #f9f9f9;
+  border-top: 1px solid #eee;
+  padding: 6px 10px;
+  font-size: 12px;
+  color: #666;
+  text-align: center;
+}
+
+.no-files {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #888;
+  font-size: 14px;
+  padding: 40px 0;
+}
+
+.no-files i {
+  font-size: 36px;
+  margin-bottom: 8px;
+  color: #ccc;
+}
+
+/* ------------------------------------------------------------ */
+
+
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 12px;
+  padding: 12px;
+}
+
+.grid-item {
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 8px;
+  text-align: center;
+  font-size: 12px;
+  color: #444;
+}
+
+.grid-item img {
+  width: 100%;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 4px;
+  margin-bottom: 6px;
+}
+
+.grid-item .name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 4px;
+}
+
+.grid-item .ctime {
+  color: #888;
+  font-size: 11px;
+}
+
+.image-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); /* 自适应多列，最小160px */
+  gap: 16px; /* 网格间距 */
+  padding: 10px;
+}
+
+.image-card {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  overflow: hidden;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  transition: box-shadow 0.3s ease;
+}
+
+.image-card:hover {
+  box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+}
+
+.image-card img {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  display: block;
+  border-bottom: 1px solid #eee;
+}
+
+.image-info {
+  padding: 8px 10px;
+  font-size: 14px;
+  color: #333;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.image-info > div {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.image-date {
+  font-size: 12px;
+  color: #999;
+}
+
+.content-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 12px;
+  border-bottom: 1px solid #ddd;
+  background-color: #fafafa;
+  font-size: 14px;
+  color: #444;
+  gap: 8px;
+}
+
+.toolbar-vertical {
+  flex-direction: column !important;
+  justify-content: flex-start !important;
+  align-items: flex-start !important;
+}
+
+
+.toolbar-right label:first-of-type {
+  margin: 0;
+}
+
+.toolbar-left {
+  font-weight: 600;
+}
+
+.toolbar-right label {
+  margin-left: 16px;
+  cursor: pointer;
+  user-select: none;
+  font-weight: normal;
+  color: #333;
+}
+
+.toolbar-right input[type="checkbox"] {
+  margin-right: 6px;
+  cursor: pointer;
+}
+
+
+/* toast 样式 */
+#toast {
+  position: fixed;
+  bottom: 20px; right: 20px;
+  background: rgba(0,0,0,0.7);
+  color: white;
+  padding: 8px 14px;
+  border-radius: 4px;
+  font-size: 14px;
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+  z-index: 20000;
+}
+#toast.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+
+/* 上传弹窗 样式 */
+
+#uploadBtn {
+  padding: 6px 16px;
+  font-size: 14px;
+  color: #fff;
+  background-color: #0078d4;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+  margin-right: 12px;
+}
+
+#uploadBtn:hover {
+  background-color: #005ea6;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+#uploadBtn i {
+  font-size: 16px;
+  padding-right: 2px;
+}
+
+/* 删除按钮 */
+
+#deleteBtn {
+  padding: 6px 16px;
+  font-size: 14px;
+  color: #fff;
+  background-color: #f44336;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+  margin-right: 12px;
+}
+
+#deleteBtn:hover {
+  background-color: #d32f2f;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+#deleteBtn i {
+  font-size: 16px;
+  padding-right: 2px;
+}
+
+/* 上传弹窗 */
+
+.modal {
+  position: fixed;
+  z-index: 999;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* 弹窗内容样式 */
+.modal-content {
+  background-color: #fff;
+  padding: 24px 32px;
+  border-radius: 8px;
+  width: 400px;
+  max-width: 90%;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+/* 标题样式 */
+.modal-title {
+  margin-top: 0;
+  margin-bottom: 20px;
+  font-size: 20px;
+  font-weight: bold;
+  color: #333;
+}
+
+/* 拖拽区域样式 */
+.upload-drop-area {
+  border: 2px dashed #ccc;
+  border-radius: 6px;
+  padding: 30px 10px;
+  margin-bottom: 16px;
+  color: #777;
+  background-color: #f9f9f9;
+  transition: background-color 0.3s ease;
+}
+
+.upload-drop-area span {
+  margin: auto;
+}
+
+.upload-drop-area.dragover {
+  background-color: #e6f7ff;
+  border-color: #1890ff;
+  color: #1890ff;
+}
+
+/* 文件选择框 */
+.file-select-box {
+  padding: 12px ;
+  width: 100%;
+  background-color: #f5faff;
+  border-radius: 6px;
+  text-align: center;
+  line-height: 45px;
+  font-size: 16px;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+  margin-bottom: 24px;
+  margin-top: 16px;
+  box-sizing: border-box;
+}
+
+/* 按钮区样式 */
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+/* 按钮基础样式 */
+.btn {
+  padding: 6px 16px;
+  font-size: 14px;
+  border: none;
+  border-radius: 4px;
+  background-color: #eee;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn:hover {
+  background-color: #ddd;
+}
+
+.btn.primary {
+  background-color: #1890ff;
+  color: white;
+}
+
+.btn.primary:hover {
+  background-color: #40a9ff;
+}
+
+/* 上传进度文字样式 */
+.upload-progress {
+  margin-bottom: 16px;
+  font-size: 14px;
+  color: #555;
+  display: none;
+}
+
+.image-card.selected {
+  outline: 3px solid #007bff;
+  opacity: 0.8;
+}
+
+.imgCount {
+  margin-left: 16px;
+  cursor: pointer;
+  user-select: none;
+  font-weight: normal;
+  color: #999; 
+  display: inline-block;
+}
+
+.image-card {
+  position: relative;
+}
+
+.magnifier-icon {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 14px;
+  color: #ddd;
+  background: rgba(0, 0, 0, 0.25); /* 更透明一些 */
+  backdrop-filter: blur(6px);       /* 背景模糊 */
+  -webkit-backdrop-filter: blur(6px); /* 兼容 Safari */
+  padding: 4px;
+  border-radius: 0 0 0 8px;
+  cursor: pointer;
+  z-index: 2;
+  transition: background 0.2s, color 0.2s;
+}
+
+.magnifier-icon:hover {
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+}
+
+
+
+.image-previewer {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.7); /* 深色遮罩更明显 */
+  backdrop-filter: blur(6px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  padding: 20px; /* 给内容留边距 */
+  box-sizing: border-box;
+}
+
+.image-preview-content {
+  position: relative;
+  background: #fff;
+  border-radius: 12px;
+  max-width: 90vw;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+  /* padding: 12px 12px; */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* gap: 12px; */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  overflow: hidden;
+}
+
+.image-preview-content img {
+  max-width: 100%;
+  max-height: 60vh;
+  /* border-radius: 8px; */
+  /* box-shadow: 0 4px 12px rgba(0,0,0,0.15); */
+  object-fit: contain;
+  user-select: none;
+}
+
+.image-info-box {
+  font-size: 15px;
+  color: #444;
+  line-height: 1.5;
+  width: 100%;
+  text-align: left;
+  /* border-top: 1px solid #eee; */
+  padding: 12px;
+  user-select: text;
+  box-sizing: border-box;
+}
+
+.image-info-box > div:first-child {
+  margin-bottom: 6px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 600;
+}
+
+.image-info-box > div:not(0) {
+  font-size: 12px;
+}
+
+.image-info-box i {
+  color: #999;
+}
+
+
+.image-preview-content button {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  font-size: 16px;
+  color: #ddd;
+  background: rgba(0, 0, 0, 0.25); /* 更透明一些 */
+  backdrop-filter: blur(6px);       /* 背景模糊 */
+  -webkit-backdrop-filter: blur(6px); /* 兼容 Safari */
+  padding: 8px;
+  border-radius: 0 0 0 8px;
+  cursor: pointer;
+  z-index: 2;
+  transition: background 0.2s, color 0.2s;
+  border: 0;
+}
+
+.image-preview-content button:hover {
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+}
+
+
+.infoThumbBox, .infoOriginalBox, #infoTime {
+  /* display: flex; */
+  font-size: 14px;
+  color: #666;
+}
+
+.custom-file-label {
+  display: inline-block;
+  padding: 8px 16px;
+  border: #2196f3 solid 1px;
+  color: #2196f3;
+  border-radius: 6px;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.3s;
+  line-height: 16px;
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+
+.custom-file-label:hover {
+  color: #fff;
+  background-color: #1976d2;
+}
+
+.file-info-text {
+  font-size: 14px;
+  color: #666;
+  line-height: 16px;
+}
+
+.or {
+  font-size: 12px;
+  color: #999;
+  line-height: 12px;
+}

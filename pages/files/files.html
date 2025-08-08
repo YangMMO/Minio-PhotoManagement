@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>文件管理</title>
+  <link rel="stylesheet" href="../../assets/remixicon.css">
+  <link rel="stylesheet" href="./files.css">
+  <style>
+
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div id="userInfo"></div>
+    <button id="logoutBtn">登出</button>
+  </div>
+
+  <div class="main-container">
+    <div class="sidebar">
+      <div class="sidebar-header">
+        <button id="backBtn"><i class="ri-arrow-left-line"></i></button>
+        <div class="bucket-name" id="bucketNameDisplay"></div>
+        <button id="refreshFolderBtn" title="刷新"><i class="ri-refresh-line"></i></button>
+        <button id="addRootFolderBtn" title="根目录添加，添加子目录请右键目录树"><i class="ri-add-large-line"></i></button>
+      </div>
+      <div id="folderTree" class="folder-tree"></div>
+    </div>
+
+    <div class="resizerBox">
+      <div class="resizer" id="resizer"></div> <!-- 拖拽条 -->
+    </div>
+
+    <div class="content-area" id="fileContent">
+      <div class="content-header">
+        <div class="content-title">请选择左侧目录</div>
+        <div class="content-actions">
+          <!-- 未来可添加按钮 -->
+        </div>
+      </div>
+    
+      <!-- 新增工具栏 -->
+      <div class="content-toolbar" id="content-toolbar" style="display: none;">
+        <div class="toolbar-left">
+          <button id="uploadBtn"><i class="ri-folder-upload-fill"></i>上传图片</button>
+          <button id="deleteBtn"><i class="ri-delete-bin-fill"></i>删除</button>
+          <label id="selectDate"><input type="checkbox" /> 已选: <span>0</span></label>
+        </div>
+        <div class="toolbar-right">
+          <label><input type="checkbox" id="toggleFileName" checked /> 显示文件名</label>
+          <label><input type="checkbox" id="toggleDate" checked /> 显示创建日期</label>
+          <label id="sortToggle"><i class="ri-sort-asc"></i> 时间顺序</label>
+          <div class="imgCount">图片数量: <span id="imageCount">0</span></div>
+        </div>
+      </div>
+    
+      <div class="content-body">
+        <!-- 文件内容区域 -->
+      </div>
+    
+      <div class="content-footer">
+        仅支持查看图片格式文件，original 与 thumb 的照片将根据操作自动同步
+      </div>
+    </div>
+    
+  </div>
+  
+  <div id="contextMenu" class="context-menu" style="display:none; position:absolute;">
+    <ul>
+      <li id="createFolder"><i class="ri-node-tree"></i>新建目录路径</li>
+      <li id="deleteFolder"><i class="ri-delete-back-2-line"></i>删除目录路径</li>
+    </ul>
+  </div>
+  
+  <!-- 新建目录弹窗（这个弹窗在 openCreateModal 函数里动态创建，不用写这里） -->
+
+  <!-- 删除确认弹窗容器 -->
+  <div id="confirmModal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <h3 id="confirmMessage"></h3>
+      <div class="modal-actions" style="margin-top: 16px; text-align: right;">
+        <button id="confirmOkBtn">确定</button>
+        <button id="confirmCancelBtn">取消</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- toast 提示 -->
+  <div id="toast"></div>
+
+  <!-- 上传弹窗 -->
+  <div id="uploadModal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <h3 class="modal-title">上传图片</h3>
+  
+      <div id="uploadProgress" class="upload-progress">正在上传（0 / 0）</div>
+  
+      <div class="upload-drop-area" id="dropArea">
+        <span>🖱️ 将图片或文件夹拖拽到此区域</span>
+      </div>
+
+      <div id="fileSelectBox" class="file-select-box">
+        <div class="or">或者</div>
+        <input type="file" id="fileInput" webkitdirectory multiple hidden />
+        <label for="fileInput" id="fileInputLabel" class="custom-file-label">
+          📂 选择文件夹上传
+        </label>
+        <div id="fileInfo" class="file-info-text">尚未选择任何文件夹</div>
+      </div>
+  
+      <div id="uploadActionButtons" class="modal-actions">
+        <button id="uploadConfirmBtn" class="btn primary">上传</button>
+        <button id="uploadCancelBtn" class="btn">取消</button>
+      </div>
+  
+      <div id="uploadFinishBox" class="modal-actions" style="display:none;">
+        <button id="uploadFinishBtn" class="btn primary">完成</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="selectionBox" style="position: absolute; border: 1px dashed #4a90e2; background-color: rgba(74, 144, 226, 0.2); display: none; z-index: 1000;"></div>
+
+  <div id="imagePreviewer" class="image-previewer" style="display: none;">
+    <div class="image-preview-content">
+      <img id="previewImage" />
+      <div class="image-info-box">
+        <div id="infoFilename"></div>
+        <div id="infoTime"></div>
+      
+        <div class="infoThumbBox">
+          <span id="infoThumbSize"></span>
+          <span id="infoThumbDim" style="margin-left: 8px;"></span>
+        </div>
+      
+        <div class="infoOriginalBox">
+          <span id="infoOriginalSize"></span>
+          <span id="infoOriginalDim" style="margin-left: 8px;"></span>
+        </div>
+      </div>
+      <button onclick="closeImagePreview()"><i class="ri-close-large-fill"></i></button>
+    </div>
+  </div>
+
+  <script type="module" src="./fileContent.js"></script>
+  <script type="module" src="./files.js"></script>
+</body>
+</html>

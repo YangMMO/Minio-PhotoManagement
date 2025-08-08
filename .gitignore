@@ -1,0 +1,30 @@
+# Node.js dependencies
+node_modules/
+
+# Output of electron-builder
+dist/
+
+# Electron cache or temp files
+*.asar
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Environment variables or config (如果你想保护 config.json，自己决定是否忽略)
+# config.json
+
+# VSCode settings
+.vscode/
+
+# Optional: editor swap files
+*.swp
+*.swo
+
+# Optional: local env files
+.env
