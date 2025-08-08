@@ -1,4 +1,4 @@
-# Minio-PhotoManagement
+# Minio-PhotoManagement 照片管理
 
 一个基于 Electron 的 MinIO 图片管理系统客户端，使用 MinIO JavaScript SDK (兼容 AWS S3 API) 实现。
 
