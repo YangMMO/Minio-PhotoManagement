@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>存储桶Buckets</title>
+  <title data-i18n="title">存储桶 Buckets</title>
   <link rel="stylesheet" href="../../assets/remixicon.css">
   <link rel="stylesheet" href="./buckets.css">
 </head>
@@ -10,16 +10,17 @@
 <body>
   <div class="header">
     <div id="userInfo"></div>
-    <button id="logoutBtn">登出</button>
+    <button id="logoutBtn" data-i18n="logout">登出</button>
   </div>
 
   <div class="bucket-box">
-    <h1>存储桶列表</h1>
+    <h1 data-i18n="bucketList">存储桶列表</h1>
     <div class="bucket-container" id="bucketList"></div>
   </div>
 
-
+  <!-- 引入语言脚本 -->
+  <script src="../common/lang.js"></script>
+  <script src="./buckets.lang.js"></script>
   <script src="./buckets.js"></script>
 </body>
-
 </html>

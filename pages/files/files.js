@@ -1,4 +1,155 @@
 // files.js
+
+const filesLang = {
+  zh: {
+    // 页面标题
+    title: "文件管理",
+    
+    // 按钮和操作
+    logout: "登出",
+    // back: "返回",
+    refresh: "刷新",
+    addFolder: "根目录添加，添加子目录请右键目录树",
+    uploadImage: "上传图片",
+    delete: "删除",
+    confirm: "确定",
+    cancel: "取消",
+    ok: "确定",
+    
+    // 提示信息
+    selectFolder: "请选择目录",
+    noBucketSpecified: "未指定存储桶",
+    loadTreeFailed: "加载目录树失败",
+    configWriteFailed: "写入配置失败",
+    cannotLogout: "无法登出",
+    DragPictures: "🖱️ 将图片或文件夹拖拽到此区域",
+    or: "或者",
+    SelectFolder: "📂 选择文件夹上传",
+    upload: "上传",
+    Completed: "完成",
+    NoFolders: "尚未选择任何文件夹",
+    
+    // 模态框和确认信息
+    confirmDelete: "确认删除",
+    enterFolderName: "请输入目录名称",
+    folderExists: "目录已存在",
+    folderCreated: "目录创建成功",
+    directoryEmpty: "目录为空，无需删除",
+    
+    // 工具栏
+    showFileName: "显示文件名",
+    showDate: "显示创建日期",
+    sortTime: "时间顺序",
+    imageCount: "图片数量",
+    selected: "已选",
+    
+    // 右键菜单
+    createFolder: "新建目录路径",
+    deleteFolder: "删除目录路径",
+    create: "新建",
+    
+    // 状态消息
+    refreshSuccess: "目录与内容已刷新",
+    manualRefreshFailed: "手动刷新失败",
+    deleteSuccess: "删除成功",
+    deleteFailed: "删除失败",
+    
+    // 新建目录弹窗
+    newFolderTitle: "新建目录路径",
+    currentDate: "当前日期",
+    
+    // 文件内容区域
+    noFilesInDir: "当前目录无缩略图",
+    noFiles: "无缩略图",
+    supportTip: "仅支持查看图片格式文件，original 与 thumb 的照片将根据操作自动同步",
+    ThumbnailSize: "缩略图尺寸:",
+    setSize1: "设置缩略图最大尺寸(px)",
+    setSize2: "参考值: 480px(20~70KB), 800px(40~150KB)",
+  },
+  en: {
+    // 页面标题
+    title: "File Management",
+    
+    // 按钮和操作
+    logout: "Logout",
+    // back: "Back",
+    refresh: "Refresh",
+    addFolder: "Add root folder, right-click folder tree for subfolders",
+    uploadImage: "Upload Image",
+    delete: "Delete",
+    confirm: "Confirm",
+    cancel: "Cancel",
+    ok: "OK",
+    
+    // 提示信息
+    selectFolder: "Please select a folder",
+    noBucketSpecified: "No bucket specified",
+    loadTreeFailed: "Failed to load folder tree",
+    configWriteFailed: "Failed to write configuration",
+    cannotLogout: "Cannot logout",
+    DragPictures: "🖱️ Drag pictures or folders to this area",
+    or: "or",
+    SelectFolder: "📂 Select the folder to upload",
+    upload: "Upload",
+    Completed: "Completed",
+    NoFolders: "No folders have been selected yet",
+    
+    // 模态框和确认信息
+    confirmDelete: "Confirm deletion of",
+    enterFolderName: "Please enter folder name",
+    folderExists: "Folder already exists",
+    folderCreated: "Folder created successfully",
+    directoryEmpty: "The directory is empty and does not need to be deleted",
+    
+    // 工具栏
+    showFileName: "Filename",
+    showDate: "Creation date",
+    sortTime: "Time order",
+    imageCount: "Image count",
+    selected: "Selected",
+    
+    // 右键菜单
+    createFolder: "Create directory path",
+    deleteFolder: "Delete directory path",
+    create: "Create",
+    
+    // 状态消息
+    refreshSuccess: "Directory and content refreshed",
+    manualRefreshFailed: "Manual refresh failed",
+    deleteSuccess: "Delete successful",
+    deleteFailed: "Delete failed",
+    
+    // 新建目录弹窗
+    newFolderTitle: "Create directory path",
+    currentDate: "Current date",
+    
+    // 文件内容区域
+    noFilesInDir: "No thumbnails in current directory",
+    noFiles: "No thumbnails",
+    supportTip: "Only image format files are supported. Original and thumb photos will be automatically synchronized based on operations",
+    ThumbnailSize: "Thumbnail size:",
+    setSize1: "Set the maximum size (px) of the thumbnail",
+    setSize2: "Reference values: 480px(20-70KB), 800px(40-150KB)",
+  }
+};
+
+// 初始化语言
+window.addEventListener("DOMContentLoaded", () => {
+  if (window.MMOO_LANG) {
+    window.MMOO_LANG.initLang(filesLang);
+  }
+  let refreshFolderBtn = document.getElementById("refreshFolderBtn")
+  refreshFolderBtn.title = t("refresh")
+  let addRootFolderBtn = document.getElementById("addRootFolderBtn")
+  addRootFolderBtn.title = t("addFolder")
+});
+
+// 翻译函数（供 files.js 和 fileContent.js 使用）
+function t(key) {
+  const lang = window.MMOO_LANG.getLang();
+  return (filesLang[lang] && filesLang[lang][key]) || key;
+}
+
 const { loadContent } = require('./fileContent.js');
 
 const { createMinioClient, loadConfig } = require('../../minioClient');
@@ -75,8 +226,8 @@ logoutBtn.onclick = () => {
     fs.writeFileSync(configPath, JSON.stringify({}));
     window.location.href = '../login/login.html';
   } catch (err) {
-    console.error('写入配置失败', err);
-    alert('无法退出：配置文件写入失败。');
+    console.error(t('configWriteFailed'), err);
+    alert(t('cannotLogout'));
   }
 };
 backBtn.onclick = () => { window.location.href = '../buckets/buckets.html'; };
@@ -85,17 +236,17 @@ backBtn.onclick = () => { window.location.href = '../buckets/buckets.html'; };
 
 const urlParams = new URLSearchParams(window.location.search);
 const bucketName = urlParams.get('bucket');
-bucketNameDisplay.innerText = bucketName || '未指定存储桶';
+bucketNameDisplay.innerText = bucketName || t('noBucketSpecified');
 
 if (!bucketName) {
-  folderTree.innerHTML = '<div>未指定存储桶</div>';
+  folderTree.innerHTML = `<div>${t('noBucketSpecified')}</div>`;
 } else {
   // 页面加载时默认加载树形目录 + 根路径文件内容
   loadTreeData(bucketName)
     .then(() => {
       loadContent(bucketName, '');
     })
-    .catch(err => console.error('❌ 加载树形目录失败', err));
+    .catch(err => console.error(`❌ ${t('loadTreeFailed')}`, err));
 }
 
 
@@ -426,10 +577,10 @@ document.getElementById('createFolder').addEventListener('click', async () => {
     const newFolderPath = currentRightClickPath + folderName + '/';
 
     const exists = await checkFolderExists(bucketName, newFolderPath);
-    if (exists) return showToast('目录已存在，请输入不同名称');
+    if (exists) return showToast(t('folderExists'));
 
     await minioClient.putObject(bucketName, newFolderPath + '.keep', '');
-    showToast('目录创建成功');
+    showToast(t('folderCreated'));
 
     // 获取当前展开目录列表
     await handleNewFolder(newFolderPath);
@@ -473,12 +624,12 @@ addRootFolderBtn.addEventListener('click', async () => {
 
     const exists = await checkFolderExists(bucketName, newFolderPath);
     if (exists) {
-      showToast('目录已存在，请输入不同名称');
+      showToast(t('folderExists'));
       return;
     }
 
     await minioClient.putObject(bucketName, newFolderPath + '.keep', '');
-    showToast('目录创建成功');
+    showToast(t('folderCreated'));
     await handleNewFolder(newFolderPath);
   } catch {
     // 用户取消，不做任何事
@@ -501,14 +652,14 @@ function openCreateModal(basePath) {
     modal.innerHTML = `
       <div class="modal">
         <div class="modal-content">
-          <h3>新建目录路径</h3>
+          <h3>${t('createFolder')}</h3>
           <div>
-            <input type="text" id="newFolderName" placeholder="请输入目录名称" />
+            <input type="text" id="newFolderName" placeholder="" />
           </div>
           <div class="tags"></div>
           <div class="modal-actions">
-            <button id="confirmCreateFolder">新建</button>
-            <button id="cancelCreateFolder">取消</button>
+            <button id="confirmCreateFolder">${t('create')}</button>
+            <button id="cancelCreateFolder">${t('cancel')}</button>
           </div>
         </div>
       </div>
@@ -525,7 +676,7 @@ function openCreateModal(basePath) {
     const dateTag = document.createElement('span');
     dateTag.className = 'tag';
     dateTag.dataset.value = currentDate;
-    dateTag.textContent = '当前日期';
+    dateTag.textContent = t("currentDate");
     tagsContainer.appendChild(dateTag);
 
     requestAnimationFrame(() => input.focus());
@@ -544,7 +695,7 @@ function openCreateModal(basePath) {
     confirmBtn.addEventListener('click', () => {
       const folderName = input.value.trim();
       if (!folderName) {
-        showToast('请输入目录名称');
+        showToast(t('enterFolderName'));
         input.focus();
         return;
       }
@@ -559,7 +710,7 @@ function openCreateModal(basePath) {
 document.getElementById('deleteFolder').addEventListener('click', async () => {
   if (!currentRightClickPath) return;
 
-  const confirmed = await openConfirmModal(`确定删除目录 ${currentRightClickPath} 吗？`);
+  const confirmed = await openConfirmModal(`${t('confirmDelete')} ${currentRightClickPath}？`);
   if (!confirmed) return;
 
   const objectsToDelete = [];
@@ -569,16 +720,16 @@ document.getElementById('deleteFolder').addEventListener('click', async () => {
 
   stream.on('end', async () => {
     if (objectsToDelete.length === 0) {
-      showToast('目录为空，无需删除。');
+      showToast(t("directoryEmpty"));
       return;
     }
 
     minioClient.removeObjects(bucketName, objectsToDelete.map(o => o.name), async (err) => {
       if (err) {
         console.error(err);
-        showToast('删除失败');
+        showToast(t("deleteFailed"));
       } else {
-        showToast('删除成功');
+        showToast(t("deleteSuccess"));
 
         // 计算父目录路径
         const parentPath = getParentPath(currentRightClickPath);
@@ -604,7 +755,7 @@ document.getElementById('deleteFolder').addEventListener('click', async () => {
 
   stream.on('error', err => {
     console.error(err);
-    showToast('删除失败');
+    showToast(t("deleteFailed"));
   });
 });
 
@@ -633,7 +784,7 @@ document.getElementById('refreshFolderBtn').addEventListener('click', async () =
     const active = document.querySelector('.folder-item.active')?.dataset.fullPath || '';
     await loadTreeData(bucketName, expanded, active);
     await loadContent(bucketName, active);
-    showToast('目录与内容已刷新');
+    showToast(t("refreshSuccess"));
   } catch (err) {
     console.error('手动刷新失败', err);
   }
@@ -648,8 +799,78 @@ document.addEventListener('refreshTree', async () => {
     await loadTreeData(bucketName, expandedPaths, activePath);
     // 2. 再刷新内容区
     await loadContent(bucketName, activePath);
-    showToast('目录与内容已刷新');
+    showToast(t("refreshSuccess"));
   } catch (err) {
     console.error('刷新目录/内容失败', err);
   }
+});
+
+// 初始化缩略图尺寸
+function initThumbnailSize() {
+  // 如果 localStorage 没有值，初始化为 480
+  if (!localStorage.getItem('thumbnailMaxSize')) {
+    localStorage.setItem('thumbnailMaxSize', 480);
+  }
+  updateThumbnailSizeDisplay(localStorage.getItem('thumbnailMaxSize'));
+}
+
+// 更新页面显示
+function updateThumbnailSizeDisplay(size) {
+  const display = document.getElementById('sizeDisplay');
+  if (display) display.textContent = size + 'px';
+}
+
+// ----------------------------------------------------------------------
+
+// 弹窗修改缩略图尺寸
+function openThumbnailSizeModal() {
+  return new Promise((resolve) => {
+    const modal = document.createElement('div');
+    modal.className = 'modal';
+    modal.style.cssText = `
+      position: fixed;
+      top:0; left:0; right:0; bottom:0;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      background: rgba(0,0,0,0.5);
+      z-index:1000;
+    `;
+
+    modal.innerHTML = `
+      <div style="background:#fff;padding:20px;border-radius:8px;min-width:300px;">
+        <h3>${t("setSize1")}</h3>
+        <input type="number" id="thumbnailInput" style="width:100%;margin-top:10px;" value="${localStorage.getItem('thumbnailMaxSize') || 480}" />
+        <p>${t("setSize2")}</p>
+        <div style="text-align:right;margin-top:15px;">
+          <button id="confirmThumbnail" class="Btn">${t("confirm")}</button>
+        </div>
+      </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    const input = modal.querySelector('#thumbnailInput');
+    const confirmBtn = modal.querySelector('#confirmThumbnail');
+
+    confirmBtn.addEventListener('click', () => {
+      const value = parseInt(input.value, 10);
+      if (!isNaN(value) && value > 0) {
+        localStorage.setItem('thumbnailMaxSize', value);
+        updateThumbnailSizeDisplay(value);
+      }
+      document.body.removeChild(modal);
+      resolve();
+    });
+  });
+}
+
+// 绑定按钮事件
+document.querySelector('.settingSize')?.addEventListener('click', () => {
+  openThumbnailSizeModal();
+});
+
+// 页面加载初始化
+window.addEventListener('DOMContentLoaded', () => {
+  initThumbnailSize();
 });

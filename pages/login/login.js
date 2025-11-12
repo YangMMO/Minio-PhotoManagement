@@ -1,3 +1,44 @@
+// 定义该页面的语言字典
+const loginLang = {
+  zh: {
+    title: "MinIO 登录",
+    endpoint: "端点",
+    endpoint_placeholder: "例如 127.0.0.1",
+    port: "端口",
+    port_placeholder: "例如 9000",
+    accessKey: "Access Key",
+    accessKey_placeholder: "请输入 (用户名)",
+    secretKey: "Secret Key",
+    secretKey_placeholder: "请输入 (密码)",
+    useSSL: "使用 HTTPS (SSL)",
+    login: "登录",
+    loggingIn: "登录中...",
+    allFieldsRequired: "所有字段均不能为空",
+    loginFailed: "登录失败，请检查配置和网络连接",
+    unknownError: "未知错误，请查看控制台日志",
+  },
+  en: {
+    title: "MinIO Login",
+    endpoint: "Endpoint",
+    endpoint_placeholder: "e.g. 127.0.0.1",
+    port: "Port",
+    port_placeholder: "e.g. 9000",
+    accessKey: "Access Key",
+    accessKey_placeholder: "Enter username",
+    secretKey: "Secret Key",
+    secretKey_placeholder: "Enter password",
+    useSSL: "Use HTTPS (SSL)",
+    login: "Login",
+    loggingIn: "Logging in...",
+    allFieldsRequired: "All fields are required",
+    loginFailed: "Login failed, please check configuration or network",
+    unknownError: "Unknown error, please check console logs",
+  },
+};
+
+// 初始化语言系统
+window.MMOO_LANG.initLang(loginLang);
+
 const fs = require('fs');
 const path = require('path');
 const Minio = require('minio');
@@ -53,12 +94,12 @@ function doLogin() {
   errorDiv.innerText = '';
 
   if (!endPoint || !port || !accessKey || !secretKey) {
-    errorDiv.innerText = '所有字段均不能为空';
+    errorDiv.innerText = t('allFieldsRequired');
     return;
   }
 
   loginBtn.disabled = true;
-  loginBtn.innerText = '登录中...';
+  loginBtn.innerText = t('loggingIn');
 
   try {
     const client = new Minio.Client({
@@ -75,7 +116,7 @@ function doLogin() {
 
       if (err) {
         console.error('登录验证失败:', err);
-        errorDiv.innerText = '登录失败，请检查配置和网络连接';
+        errorDiv.innerText = t('loginFailed');
         return;
       }
 
@@ -90,9 +131,9 @@ function doLogin() {
     });
   } catch (e) {
     console.error('未知错误:', e);
-    errorDiv.innerText = '未知错误，请查看控制台日志';
+    errorDiv.innerText = t('unknownError');
     loginBtn.disabled = false;
-    loginBtn.innerText = '登录';
+    loginBtn.innerText = t('login');
   }
 }
 
@@ -266,3 +307,17 @@ function loadFilesInFolder(bucket, folder) {
 
 // 页面初始化，加载根目录树
 renderTree();
+
+window.addEventListener('langChange', () => {
+  // 更新按钮文字
+  const loginBtn = document.getElementById('loginBtn');
+  if (loginBtn) loginBtn.innerText = t('login');
+
+  // 清空错误提示或重新翻译
+  const errorDiv = document.getElementById('loginError');
+  if (errorDiv && errorDiv.innerText) {
+    // 这里也可以根据当前错误类型重新翻译，例如：
+    // if (errorDiv.dataset.errKey) errorDiv.innerText = t(errorDiv.dataset.errKey);
+    errorDiv.innerText = '';
+  }
+});

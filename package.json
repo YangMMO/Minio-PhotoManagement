@@ -24,8 +24,8 @@
   },
   "build": {
     "appId": "com.mmo.minio_thumb",
-    "productName": "Minio图片管理系统",
-    "executableName": "Minio图片管理系统",
+    "productName": "MinioPhotoManager",
+    "executableName": "MinioPhotoManager",
     "directories": {
       "buildResources": "assets",
       "output": "dist"

@@ -1,3 +1,36 @@
+// pages/buckets/buckets.lang.js
+const bucketsLang = {
+  zh: {
+    title: "存储桶 Buckets",
+    logout: "登出",
+    bucketList: "存储桶列表",
+    notLoggedIn: "未登录，请先登录",
+    loadFailed: "加载失败，请检查配置",
+    writeConfigFailed: "无法退出：配置文件写入失败。",
+  },
+  en: {
+    title: "Buckets",
+    logout: "Logout",
+    bucketList: "Bucket List",
+    notLoggedIn: "Not logged in. Please log in first.",
+    loadFailed: "Failed to load. Please check configuration.",
+    writeConfigFailed: "Unable to logout: failed to write configuration file.",
+  }
+};
+
+// 初始化语言
+window.addEventListener("DOMContentLoaded", () => {
+  if (window.MMOO_LANG) {
+    window.MMOO_LANG.initLang(bucketsLang);
+  }
+});
+
+// 翻译函数（供 buckets.js 使用）
+function t(key) {
+  const lang = window.MMOO_LANG.getLang();
+  return (bucketsLang[lang] && bucketsLang[lang][key]) || key;
+}
+
 const { createMinioClient, loadConfig } = require('../../minioClient');
 const fs = require('fs');
 const path = require('path');
@@ -27,7 +60,7 @@ logoutBtn.onclick = () => {
     window.location.href = '../login/login.html';
   } catch (err) {
     console.error('写入配置失败', err);
-    alert('无法退出：配置文件写入失败。');
+    alert(t('writeConfigFailed'));
   }
 };
 
@@ -36,14 +69,14 @@ window.onload = () => {
   const bucketList = document.getElementById('bucketList');
 
   if (!minioClient) {
-    bucketList.innerHTML = '<div>未登录，请先登录</div>';
+    bucketList.innerHTML = `<div>${t('notLoggedIn')}</div>`;
     return;
   }
 
-  minioClient.listBuckets(function(err, buckets) {
+  minioClient.listBuckets(function (err, buckets) {
     if (err) {
       console.error('Error listing buckets:', err);
-      bucketList.innerHTML = '<div>加载失败，请检查配置</div>';
+      bucketList.innerHTML = `<div>${t('loadFailed')}</div>`;
       return;
     }
 

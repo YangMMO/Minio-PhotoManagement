@@ -1,4 +1,71 @@
 // fileContent.js
+
+const filesLang = {
+  zh: {
+    NoFolders: "尚未选择任何文件夹",
+    SelectedFolder: "已选择文件夹",
+    Quantity: "数量",
+    PleaseSelect: "请选择要上传的图片",
+    noFiles: "无缩略图",
+    selected: "已选",
+    PleaseDragPicture: "请拖拽图片",
+    Uploading: '正在上传',
+    UploadFailed: '上传失败',
+    UploadCompleted: '上传完成',
+    PleaseSelectPictureFirst: '请先选择图片',
+    ConfirmDeletionQuantity: '确认删除, 数量:',
+    selectFolder: "请选择目录",
+    confirm: "确定",
+    cancel: "取消",
+
+    DeletedSuccessfully: "删除成功",
+    DeletionFailed: "删除失败",
+    SizeLoading: ", 尺寸加载中...",
+    Time: "时间",
+    Thumbnail: "缩略图",
+    OriginalImage: "原图",
+    ViewOriginalImage: "查看原图",
+    currentDirectoryNull: "当前目录无缩略图",
+  },
+  en: {
+    NoFolders: "No folders have been selected yet",
+    SelectedFolder: "Selected folder",
+    Quantity: "Quantity",
+    PleaseSelect: "Please select the picture you want to upload",
+    noFiles: "No thumbnails",
+    selected: "Selected",
+    PleaseDragPicture: "Please drag the picture",
+    Uploading: 'Uploading',
+    UploadFailed: 'Upload failed',
+    UploadCompleted: 'Upload completed',
+    PleaseSelectPictureFirst: 'Please select the picture first',
+    ConfirmDeletionQuantity: 'Confirm deletion. Quantity:',
+    selectFolder: "Please select a folder",
+    confirm: "Confirm",
+    cancel: "Cancel",
+
+    DeletedSuccessfully: "Deleted successfully",
+    DeletionFailed: "Deletion failed",
+    SizeLoading: ", Size loading...",
+    Time: "Time",
+    Thumbnail: "Thumbnail",
+    OriginalImage: "Original image",
+    ViewOriginalImage: "View the original image",
+    currentDirectoryNull: "There are no thumbnails in the current directory",
+  }
+};
+
+window.addEventListener("DOMContentLoaded", () => {
+  if (window.MMOO_LANG) {
+    window.MMOO_LANG.initLang(filesLang);
+  }
+});
+
+function t(key) {
+  const lang = window.MMOO_LANG.getLang();
+  return (filesLang[lang] && filesLang[lang][key]) || key;
+}
+
 const { createMinioClient, loadConfig } = require('../../minioClient');
 
 const config = loadConfig();
@@ -81,24 +148,48 @@ function fileToBuffer(file) {
 }
 
 // 缩略图生成
-function createThumbnail(file, maxSize = 480) {
+function createThumbnail(file, maxSize) {
   return new Promise((resolve, reject) => {
+    // 如果没传 maxSize，则从 localStorage 读取，默认 480
+    const size = maxSize || parseInt(localStorage.getItem('thumbnailMaxSize'), 10) || 480;
+
     const img = new Image();
     const url = URL.createObjectURL(file);
+
     img.onload = () => {
       let { width, height } = img;
-      if (width > height && width > maxSize) { height *= maxSize/width; width = maxSize; }
-      else if (height >= width && height > maxSize) { width *= maxSize/height; height = maxSize; }
+
+      if (width > height && width > size) {
+        height *= size / width;
+        width = size;
+      } else if (height >= width && height > size) {
+        width *= size / height;
+        height = size;
+      }
+
       const canvas = document.createElement('canvas');
-      canvas.width = width; canvas.height = height;
-      canvas.getContext('2d').drawImage(img,0,0,width,height);
-      canvas.toBlob(blob => blob ? resolve(blob) : reject(new Error('缩略图失败')), 'image/jpeg', 0.75);
+      canvas.width = width;
+      canvas.height = height;
+      canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+
+      canvas.toBlob(
+        (blob) => (blob ? resolve(blob) : reject(new Error('缩略图失败'))),
+        'image/jpeg',
+        0.75
+      );
+
       URL.revokeObjectURL(url);
     };
-    img.onerror = e => { URL.revokeObjectURL(url); reject(e); };
+
+    img.onerror = (e) => {
+      URL.revokeObjectURL(url);
+      reject(e);
+    };
+
     img.src = url;
   });
 }
+
 
 // 判断图片
 function isImageFile(name) {
@@ -130,7 +221,7 @@ dropArea.addEventListener('drop',async e=>{
     all = all.concat(await traverseFileTree(entry));
   }
   selectedFiles = all.filter(f=>isImageFile(f.name));
-  showToast(selectedFiles.length?`选中 ${selectedFiles.length} 张`:'请拖拽图片');
+  showToast(selectedFiles.length?`${t("selected")}: ${selectedFiles.length}`: t("PleaseDragPicture"));
   fileInput.value='';
 });
 
@@ -146,7 +237,7 @@ function openUploadDialog(b, p) {
   document.getElementById('uploadActionButtons').style.display = 'flex';
   document.getElementById('uploadProgress').style.display = 'none';
   document.getElementById('uploadFinishBox').style.display = 'none';
-  document.getElementById('fileInfo').textContent = '尚未选择任何文件夹';
+  document.getElementById('fileInfo').textContent = t("NoFolders");
   dropArea.style.display = 'flex';
 
   uploadModal.style.display = 'flex';
@@ -175,9 +266,9 @@ fileInput.addEventListener('change', () => {
   if (fileInput.files.length > 0) {
     const firstPath = fileInput.files[0].webkitRelativePath;
     const folderName = firstPath.split('/')[0];
-    fileInfo.textContent = `已选择文件夹：${folderName}，共 ${fileInput.files.length} 个文件`;
+    fileInfo.textContent = `${t("SelectedFolder")}：${folderName}，${t("Quantity")}：${fileInput.files.length}`;
   } else {
-    fileInfo.textContent = '尚未选择任何文件夹';
+    fileInfo.textContent = t("NoFolders");
   }
 });
 
@@ -191,7 +282,7 @@ async function handleUploadConfirmClick() {
     : Array.from(fileInput.files);
 
   if (!files.length) {
-    showToast('请选择要上传的图片');
+    showToast(t("PleaseSelect"));
     return;
   }
 
@@ -202,13 +293,13 @@ async function handleUploadConfirmClick() {
 
   const prog = document.getElementById('uploadProgress');
   prog.style.display = 'block';
-  prog.innerHTML = `正在上传 (0 / ${files.length})`;
+  prog.innerHTML = `${t("Uploading")} (0 / ${files.length})`;
 
   let successCount = 0;
 
   for (let i = 0; i < files.length; i++) {
     const f = files[i];
-    prog.innerHTML  = `正在上传 (${successCount + 1} / ${files.length})`;
+    prog.innerHTML  = `${t("Uploading")} (${successCount + 1} / ${files.length})`;
 
     try {
       const buf = await fileToBuffer(f);
@@ -231,11 +322,11 @@ async function handleUploadConfirmClick() {
 
     } catch (e) {
       console.error(e);
-      showToast(`上传失败: ${f.name}`, 4000);
+      showToast(`${t("UploadFailed")}: ${f.name}`, 4000);
     }
   }
 
-  prog.textContent = `✅ 上传完成：${successCount} / ${files.length} 张`;
+  prog.textContent = `✅ ${t("UploadCompleted")}: ${successCount} / ${files.length}`;
   document.getElementById('uploadFinishBox').style.display = 'block';
 
   // 通知刷新图片区域
@@ -253,6 +344,34 @@ function initUploadConfirmEvent(){
   uploadConfirmBtn.onclick = handleUploadConfirmClick;
 }
 
+function openConfirmModal(message) {
+  return new Promise((resolve) => {
+    confirmMessage.textContent = message;
+    confirmModal.style.display = 'flex';
+
+    function cleanUp() {
+      confirmModal.style.display = 'none';
+      confirmOkBtn.removeEventListener('click', onOk);
+      confirmCancelBtn.removeEventListener('click', onCancel);
+    }
+    function onOk() {
+      cleanUp();
+      resolve(true);
+    }
+    function onCancel() {
+      cleanUp();
+      resolve(false);
+    }
+
+    // 多语言支持
+    confirmOkBtn.textContent = t("confirm");
+    confirmCancelBtn.textContent = t("cancel");
+
+    confirmOkBtn.addEventListener('click', onOk);
+    confirmCancelBtn.addEventListener('click', onCancel);
+  });
+}
+
 // 计数
 function updateImageCount(c){ if(imageCountSpan) imageCountSpan.textContent=c; }
 
@@ -261,8 +380,9 @@ if(sortToggle){ sortToggle.style.cursor='pointer'; sortToggle.onclick=()=>{ sort
 
 // 多选删除
 if(deleteBtn){ deleteBtn.onclick=async()=>{
-  if(!selectedThumbs.size){showToast('请先选择图片');return;}
-  if(!confirm(`确认删除 ${selectedThumbs.size} 张?`)) return;
+  if(!selectedThumbs.size){showToast(t("PleaseSelectPictureFirst"));return;}
+  const confirmed = await openConfirmModal(`${t("ConfirmDeletionQuantity")} ${selectedThumbs.size}`);
+  if (!confirmed) return;
   const toDel=[];
   selectedThumbs.forEach(name => {
     // 去掉末尾 thumb/ 或 original/ 得到 base 路径
@@ -274,10 +394,10 @@ if(deleteBtn){ deleteBtn.onclick=async()=>{
     toDel.push(thumbPath);
     toDel.push(originalPath);
   });
-  try{ await minioClient.removeObjects(currentBucket,toDel); showToast('删除成功'); selectedThumbs.clear(); await loadContent(currentBucket,currentPrefix); 
+  try{ await minioClient.removeObjects(currentBucket,toDel); showToast(t("DeletedSuccessfully")); selectedThumbs.clear(); await loadContent(currentBucket,currentPrefix); 
 
   } catch(e){
-    console.error(e);showToast('删除失败');
+    console.error(e);showToast(t("DeletionFailed"));
   }}; 
 
   setTimeout(() => {
@@ -305,8 +425,8 @@ async function previewImage(itemName) {
   document.getElementById('infoFilename').textContent = `${itemName}`;
 
   // 设置尺寸信息初始为加载中
-  document.getElementById('infoThumbDim').textContent = ', 尺寸加载中...';
-  document.getElementById('infoOriginalDim').textContent = ', 尺寸加载中...';
+  document.getElementById('infoThumbDim').textContent = t("SizeLoading");
+  document.getElementById('infoOriginalDim').textContent = t("SizeLoading");
 
   try {
     const [thumbStat, originalStat] = await Promise.all([
@@ -316,13 +436,13 @@ async function previewImage(itemName) {
 
     // 上传时间来自 original
     document.getElementById('infoTime').innerHTML =
-      `<i class="ri-time-fill"></i> 时间：${new Date(originalStat.lastModified).toLocaleString()}`;
+      `<i class="ri-time-fill"></i> ${t("Time")}：${new Date(originalStat.lastModified).toLocaleString()}`;
 
     document.getElementById('infoThumbSize').innerHTML =
-      `<i class="ri-file-image-fill"></i> 缩略图：${(thumbStat.size / 1024).toFixed(1)} KB`;
+      `<i class="ri-file-image-fill"></i> ${t("Thumbnail")}：${(thumbStat.size / 1024).toFixed(1)} KB`;
 
     document.getElementById('infoOriginalSize').innerHTML =
-      `<i class="ri-file-image-fill"></i> 原图：${(originalStat.size / 1024).toFixed(1)} KB`;
+      `<i class="ri-file-image-fill"></i> ${t("OriginalImage")}：${(originalStat.size / 1024).toFixed(1)} KB`;
   } catch (err) {
     console.error('获取文件信息失败:', err);
   }
@@ -363,7 +483,7 @@ function createImageCard(item, fn, dt) {
   // ✅ 添加右上角的“放大镜”查看原图按钮
   const magnifier = document.createElement('i');
   magnifier.className = 'ri-search-line magnifier-icon';
-  magnifier.title = '查看原图';
+  magnifier.title = t('ViewOriginalImage');
   magnifier.onclick = e => {
     e.stopPropagation();
     let basePrefix = currentPrefix.replace(/thumb\/?$/, 'original/');
@@ -417,7 +537,7 @@ function createImageCard(item, fn, dt) {
 // 渲染格子
 function renderImageGrid(){
   const body=document.querySelector('.content-body'); body.innerHTML='';
-  if(!cachedItems.length){ body.innerHTML='<div class="no-files">当前目录无缩略图</div>'; updateImageCount(0); return; }
+  if(!cachedItems.length){ body.innerHTML=`<div class="no-files">${t("currentDirectoryNull")}</div>`; updateImageCount(0); return; }
   // 排序
   cachedItems.sort((a,b)=> sortAsc? new Date(a.modified)-new Date(b.modified) : new Date(b.modified)-new Date(a.modified));
   const grid=document.createElement('div'); grid.className='image-grid';
@@ -491,7 +611,7 @@ async function loadContent(bucket, prefix) {
   const selAllCb = document.querySelector('#selectDate input');
   if (selAllCb) selAllCb.checked = false;
   if (!prefix) {
-    document.querySelector('.content-title').textContent = '请选择目录';
+    document.querySelector('.content-title').textContent = t("selectFolder");
     document.querySelector('.content-body').innerHTML = '';
     updateToolbarVisibility(false);
     return;
@@ -523,7 +643,7 @@ async function loadContent(bucket, prefix) {
     currentPrefix = displayPath;
     await loadThumbImages(bucket, displayPath);
   } else {
-    document.querySelector('.content-body').innerHTML = '<div class="no-files">无缩略图</div>';
+    document.querySelector('.content-body').innerHTML = `<div class="no-files">${t("noFiles")}</div>`;
     updateImageCount(0)
     currentPrefix = displayPath;
     updateToolbarVisibility(true);

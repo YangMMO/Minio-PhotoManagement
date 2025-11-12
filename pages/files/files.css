@@ -36,6 +36,7 @@ ul, li {
 }
 
 #logoutBtn {
+  height: 32px;
   padding: 6px 14px;
   font-size: 13px;
   background-color: #f44336;
@@ -297,7 +298,7 @@ ul, li {
   border: 1px solid #d0d7de;
   border-radius: 6px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  width: 180px;
+  width: auto;
   z-index: 9999;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial;
   font-size: 14px;
@@ -446,7 +447,7 @@ ul, li {
   margin-top: 16px;
   text-align: right;
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
   gap: 14px;
 }
 
@@ -720,6 +721,23 @@ ul, li {
   user-select: none;
   font-weight: normal;
   color: #333;
+  vertical-align: middle;
+  display: inline-flex;
+  justify-content: center;
+}
+
+.toolbar-right  > *,
+.toolbar-left  > label {
+  vertical-align: middle;
+  display: inline-flex;
+  justify-content: center;
+  height: 22px; /* 你想要的固定高度 */
+  line-height: 22px; /* 如果是文字按钮，可以让文字垂直居中 */
+}
+
+.toolbar-left  > label > p {
+  margin: 0;
+  margin-left: 4px;
 }
 
 .toolbar-right input[type="checkbox"] {
@@ -751,6 +769,7 @@ ul, li {
 /* 上传弹窗 样式 */
 
 #uploadBtn {
+  height: 32px;
   padding: 6px 16px;
   font-size: 14px;
   color: #fff;
@@ -776,6 +795,7 @@ ul, li {
 /* 删除按钮 */
 
 #deleteBtn {
+  height: 32px;
   padding: 6px 16px;
   font-size: 14px;
   color: #fff;
@@ -1076,4 +1096,56 @@ ul, li {
   font-size: 12px;
   color: #999;
   line-height: 12px;
+}
+
+.settingSize {
+  cursor: pointer;
+
+}
+
+.settingSize span {
+  font-size: 14px;
+  color: #333;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  box-sizing: border-box;
+}
+
+input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: #007aff; /* 现代浏览器支持 */
+  cursor: pointer;
+}
+
+.Btn {
+  height: 40px;
+  padding: 6px 16px;
+  font-size: 14px;
+  color: #fff;
+  background-color: #0078d4;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.Btn:hover {
+  background-color: #005ea6;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.Btn i {
+  font-size: 16px;
+  padding-right: 2px;
 }
