@@ -2,12 +2,8 @@
 
 const filesLang = {
   zh: {
-    // 页面标题
     title: "文件管理",
-    
-    // 按钮和操作
     logout: "登出",
-    // back: "返回",
     refresh: "刷新",
     addFolder: "根目录添加，添加子目录请右键目录树",
     uploadImage: "上传图片",
@@ -15,8 +11,8 @@ const filesLang = {
     confirm: "确定",
     cancel: "取消",
     ok: "确定",
-    
-    // 提示信息
+    save: "保存",
+
     selectFolder: "请选择目录",
     noBucketSpecified: "未指定存储桶",
     loadTreeFailed: "加载目录树失败",
@@ -28,51 +24,56 @@ const filesLang = {
     upload: "上传",
     Completed: "完成",
     NoFolders: "尚未选择任何文件夹",
-    
-    // 模态框和确认信息
+    uploadTips: "为了确保上传成功，请保持每个单张图片大小在 (20MB) 内。",
+
     confirmDelete: "确认删除",
     enterFolderName: "请输入目录名称",
     folderExists: "目录已存在",
     folderCreated: "目录创建成功",
     directoryEmpty: "目录为空，无需删除",
-    
-    // 工具栏
+
     showFileName: "显示文件名",
     showDate: "显示创建日期",
     sortTime: "时间顺序",
     imageCount: "图片数量",
     selected: "已选",
-    
-    // 右键菜单
+
     createFolder: "新建目录路径",
     deleteFolder: "删除目录路径",
     create: "新建",
-    
-    // 状态消息
+
     refreshSuccess: "目录与内容已刷新",
     manualRefreshFailed: "手动刷新失败",
     deleteSuccess: "删除成功",
     deleteFailed: "删除失败",
-    
-    // 新建目录弹窗
+
     newFolderTitle: "新建目录路径",
     currentDate: "当前日期",
-    
-    // 文件内容区域
+
     noFilesInDir: "当前目录无缩略图",
     noFiles: "无缩略图",
-    supportTip: "仅支持查看图片格式文件，original 与 thumb 的照片将根据操作自动同步",
+    supportTip: "仅支持查看图片格式文件，原图与自动生成的照片将根据操作自动同步",
+    WatermarkSize: "水印预览图尺寸:",
     ThumbnailSize: "缩略图尺寸:",
     setSize1: "设置缩略图最大尺寸(px)",
-    setSize2: "参考值: 480px(20~70KB), 800px(40~150KB)",
+    setSize2: "参考值: 480px(20~70KB) - 800px(40~150KB)",
+    setWSize1: "设置水印预览图尺寸(px)",
+    setWSize2: "建议: 800px(40~150KB) - 1600px(240~600KB)",
+
+    uploadWatermark: "上传水印 (PNG)",
+    removeWatermark: "移除水印",
+    watermarkRatio: "水印占比 (1/X)",
+    watermarkOpacity: "透明度",
+    preview: "预览效果",
+    pngOnly: "只允许上传 PNG 格式",
+    uploaded: "已上传",
+    notUploaded: "未上传",
+    watermarkLocalTip: "提示: 上传的水印仅存储于本地电脑，无水印时，系统不生成水印预览图。",
   },
+
   en: {
-    // 页面标题
     title: "File Management",
-    
-    // 按钮和操作
     logout: "Logout",
-    // back: "Back",
     refresh: "Refresh",
     addFolder: "Add root folder, right-click folder tree for subfolders",
     uploadImage: "Upload Image",
@@ -80,8 +81,8 @@ const filesLang = {
     confirm: "Confirm",
     cancel: "Cancel",
     ok: "OK",
-    
-    // 提示信息
+    save: "Save",
+
     selectFolder: "Please select a folder",
     noBucketSpecified: "No bucket specified",
     loadTreeFailed: "Failed to load folder tree",
@@ -93,43 +94,51 @@ const filesLang = {
     upload: "Upload",
     Completed: "Completed",
     NoFolders: "No folders have been selected yet",
-    
-    // 模态框和确认信息
+    uploadTips: "To ensure a smooth upload process, please keep the size of each single image within (20MB).",
+
     confirmDelete: "Confirm deletion of",
     enterFolderName: "Please enter folder name",
     folderExists: "Folder already exists",
     folderCreated: "Folder created successfully",
     directoryEmpty: "The directory is empty and does not need to be deleted",
-    
-    // 工具栏
+
     showFileName: "Filename",
     showDate: "Creation date",
     sortTime: "Time order",
     imageCount: "Image count",
     selected: "Selected",
-    
-    // 右键菜单
+
     createFolder: "Create directory path",
     deleteFolder: "Delete directory path",
     create: "Create",
-    
-    // 状态消息
+
     refreshSuccess: "Directory and content refreshed",
     manualRefreshFailed: "Manual refresh failed",
     deleteSuccess: "Delete successful",
     deleteFailed: "Delete failed",
-    
-    // 新建目录弹窗
+
     newFolderTitle: "Create directory path",
     currentDate: "Current date",
-    
-    // 文件内容区域
+
     noFilesInDir: "No thumbnails in current directory",
     noFiles: "No thumbnails",
-    supportTip: "Only image format files are supported. Original and thumb photos will be automatically synchronized based on operations",
+    supportTip: "Only supports viewing image format files. Original and other automatically generated photos will be automatically synchronized according to the operation",
+    WatermarkSize: "Watermark preview size:",
     ThumbnailSize: "Thumbnail size:",
     setSize1: "Set the maximum size (px) of the thumbnail",
-    setSize2: "Reference values: 480px(20-70KB), 800px(40-150KB)",
+    setSize2: "Reference values: 480px(20~70KB) - 800px(40~150KB)",
+    setWSize1: "Set the size (px) of the watermark preview image",
+    setWSize2: "Suggestion: 800px(40~150KB) - 1600px(240~600KB)",
+
+    uploadWatermark: "Upload watermark (PNG)",
+    removeWatermark: "Remove watermark",
+    watermarkRatio: "Watermark ratio (1/X)",
+    watermarkOpacity: "Opacity",
+    preview: "Preview",
+    pngOnly: "Only PNG files are allowed",
+    uploaded: "Uploaded",
+    notUploaded: "Not Uploaded",
+    watermarkLocalTip: "Tips: The uploaded watermark is only stored on the local computer. When there is no watermark, the system will not generate a watermark preview image.",
   }
 };
 
@@ -294,10 +303,11 @@ async function loadTreeData(bucket, expandedPaths = [], activePath = '') {
       // 过滤一级 thumb/original
       const filtered = all.filter(o => {
         const parts = o.name.split('/');
-        return !(parts[1] === 'thumb' || parts[1] === 'original');
+        return !(parts[1] === 'thumb' || parts[1] === 'original' || parts[1] === 'watermark');
       });
 
       const data = buildTreeFromKeysWithTime(filtered);
+
       renderTree(data, folderTree, '');
       requestAnimationFrame(() => {
         expandedPaths.forEach(p => {
@@ -319,7 +329,7 @@ async function loadTreeData(bucket, expandedPaths = [], activePath = '') {
   });
 }
 
-
+// ==================== 构建树形数据 ====================
 function buildTreeFromKeysWithTime(objects) {
   const tree = {};
   const dirTimes = {};
@@ -347,7 +357,7 @@ function buildTreeFromKeysWithTime(objects) {
     const parts = obj.name.split('/');
     if (parts.length <= 1) return;
 
-    if (parts.includes('thumb') || parts.includes('original')) return;
+    if (parts.includes('thumb') || parts.includes('original') || parts.includes('watermark')) return;
 
     let current = tree;
     for (let i = 0; i < parts.length - 1; i++) {
@@ -369,7 +379,7 @@ function buildTreeFromKeysWithTime(objects) {
   // 比对缺失的路径并补进 tree
   allDirs.forEach(dirPath => {
     if (addedPaths.has(dirPath)) return; // 已有就跳过
-    if (dirPath.includes('thumb/') || dirPath.includes('original/')) return; // 仍需跳过
+    if (dirPath.includes('thumb/') || dirPath.includes('original/') || dirPath.includes('watermark/')) return; // 仍需跳过
 
     const parts = dirPath.split('/').filter(Boolean);
     let current = tree;
@@ -806,6 +816,28 @@ document.addEventListener('refreshTree', async () => {
 });
 
 // 初始化缩略图尺寸
+function initWatermarkSize() {
+    // 如果 localStorage 没有值，初始化为 1200
+  if (!localStorage.getItem('watermarkMaxSize')) {
+    localStorage.setItem('watermarkMaxSize', 1200);
+  }
+  if (!localStorage.getItem('percentage')) {
+    localStorage.setItem('percentage', 4);
+  }
+  if (!localStorage.getItem('transparency')) {
+    localStorage.setItem('transparency', 80);
+  }
+
+  updateWatermarkSizeDisplay(localStorage.getItem('watermarkMaxSize'));
+}
+
+// 更新页面显示
+function updateWatermarkSizeDisplay(size) {
+  const display = document.getElementById('watermarkSizeDisplay');
+  if (display) display.textContent = size + 'px';
+}
+
+// 初始化缩略图尺寸
 function initThumbnailSize() {
   // 如果 localStorage 没有值，初始化为 480
   if (!localStorage.getItem('thumbnailMaxSize')) {
@@ -870,7 +902,280 @@ document.querySelector('.settingSize')?.addEventListener('click', () => {
   openThumbnailSizeModal();
 });
 
+// 弹窗修改水印预览图尺寸
+function openWatermarkSizeModal() {
+  return new Promise((resolve) => {
+
+    const modal = document.createElement('div');
+
+    modal.className = 'modal';
+
+    modal.style.cssText = `
+      position: fixed;
+      top:0; left:0; right:0; bottom:0;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      background: rgba(0,0,0,0.5);
+      z-index:1000;
+    `;
+
+    let currentWatermarkImage = localStorage.getItem('watermarkImage') || null;
+
+    const statusText = currentWatermarkImage ? t("uploaded") : t("notUploaded");
+
+    modal.innerHTML = `
+      <div style="background:#fff;padding:20px;border-radius:8px;width:600px;">
+        <h3 style="margin: 0 0 15px 0;">${t("setWSize1")}</h3>
+
+        <div style="display:flex; gap:10px; margin-bottom:15px; align-items:center;"> 
+          <input 
+            type="number" 
+            id="thumbnailInput" 
+            style="width:50%;" 
+            value="${localStorage.getItem('watermarkMaxSize') || 1200}" 
+          />
+
+          <p style="width:50%; margin:0; font-size:14px; color:#333;">${t("setWSize2")}</p>
+        </div>
+
+        <div style="display:flex; gap:10px; margin-bottom:15px; flex-direction:column; padding-top:15px; border-top:1px solid #eee;"> 
+
+          <div style="display:flex; gap:10px; align-items:center;">
+            <button id="uploadWatermark" class="Btn">${t("uploadWatermark")}</button>
+            <button id="removeWatermark" class="errBtn">${t("removeWatermark")}</button>
+
+            <span id="watermarkStatus" style="font-size:13px;color:#666;">
+              ${statusText}
+            </span>
+          </div>
+
+          <div style="font-size:12px;color:#999;">
+            ${t("watermarkLocalTip")}
+          </div>
+
+          <div style="display:flex; gap:10px;">
+            <div style="display:flex; gap:10px; flex-direction:column; width:50%">
+              <label style="font-size: 14px" for="percentageInput">${t("watermarkRatio")}</label>
+              <input 
+                type="number" 
+                id="percentageInput" 
+                min="1" 
+                max="10" 
+                style="width:100%;" 
+                value="${localStorage.getItem('percentage')}"
+              />
+            </div>
+
+            <div style="display:flex; gap:10px; flex-direction:column; width:50%">
+              <label style="font-size: 14px" for="transparencyInput">${t("watermarkOpacity")}</label>
+              <input 
+                type="number" 
+                id="transparencyInput" 
+                min="1" 
+                max="100" 
+                style="width:100%;" 
+                value="${localStorage.getItem('transparency')}"
+              />
+            </div>
+          </div>
+
+          <div style="display:flex; flex-direction:column;"> 
+            <div style="width:100%; height:300px; background: url(../../assets/Example.png); background-size: cover; overflow: hidden;">
+              <div style="width:100%; height:100%; display:grid;" id="watermarkPreview"></div>
+            </div>
+
+            <div style="text-align:center; background: #f5f5f5; padding: 2px; color: #8C8C8C; font-size: 14px;">
+              ${t("preview")}
+            </div>
+          </div>
+
+        </div>
+
+        <div style="display:flex; gap:10px; justify-content:flex-end;">
+          <button id="saveWatermark" class="Btn">${t("save")}</button>
+          <button id="cancelModal" class="cancelBtn">${t("cancel")}</button>
+        </div>
+      </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    const input = modal.querySelector('#thumbnailInput');
+    const percentageInput = modal.querySelector('#percentageInput');
+    const transparencyInput = modal.querySelector('#transparencyInput');
+    const preview = modal.querySelector('#watermarkPreview');
+    const statusLabel = modal.querySelector('#watermarkStatus');
+
+    const confirmBtn = modal.querySelector('#saveWatermark');
+    const cancelBtn = modal.querySelector('#cancelModal');
+
+    const uploadBtn = modal.querySelector('#uploadWatermark');
+    const removeBtn = modal.querySelector('#removeWatermark');
+
+    function updateStatus() {
+      statusLabel.textContent = currentWatermarkImage ? t("uploaded") : t("notUploaded");
+    }
+
+    function renderPreviewGrid(count) {
+
+      preview.innerHTML = '';
+
+      const num = Math.max(1, Math.min(10, parseInt(count, 10) || 1));
+
+      preview.style.gridTemplateColumns = `repeat(${num}, 1fr)`;
+
+      for (let i = 0; i < num; i++) {
+
+        const div = document.createElement('div');
+
+        div.style.position = 'relative';
+        div.style.borderRight = i !== num - 1 ? '1px dashed #fff' : 'none';
+
+        if (i === 0 && currentWatermarkImage) {
+
+          const img = document.createElement('img');
+
+          img.src = currentWatermarkImage;
+
+          img.style.position = 'absolute';
+          img.style.width = '100%';
+
+          img.style.opacity = (parseInt(transparencyInput.value || 80, 10) / 100).toString();
+
+          img.style.pointerEvents = 'none';
+
+          div.appendChild(img);
+        }
+
+        preview.appendChild(div);
+      }
+    }
+
+    renderPreviewGrid(percentageInput.value);
+
+    percentageInput.addEventListener('input', () => {
+
+      let v = parseInt(percentageInput.value, 10);
+
+      if (v < 1) v = 1;
+      if (v > 10) v = 10;
+
+      percentageInput.value = v;
+
+      renderPreviewGrid(v);
+
+    });
+
+    transparencyInput.addEventListener('input', () => {
+
+      let v = parseInt(transparencyInput.value, 10);
+
+      if (v < 1) v = 1;
+      if (v > 100) v = 100;
+
+      transparencyInput.value = v;
+
+      renderPreviewGrid(percentageInput.value);
+
+    });
+
+    cancelBtn.addEventListener('click', () => {
+
+      document.body.removeChild(modal);
+      resolve();
+
+    });
+
+    confirmBtn.addEventListener('click', () => {
+
+      const value = parseInt(input.value, 10);
+      const percentage = parseInt(percentageInput.value, 10);
+      const transparency = parseInt(transparencyInput.value, 10);
+
+      if (!isNaN(value) && value > 0) {
+        localStorage.setItem('watermarkMaxSize', value);
+      }
+
+      if (!isNaN(percentage)) {
+        localStorage.setItem('percentage', percentage);
+      }
+
+      if (!isNaN(transparency)) {
+        localStorage.setItem('transparency', transparency);
+      }
+
+      updateWatermarkSizeDisplay(value);
+
+      document.body.removeChild(modal);
+
+      resolve();
+
+    });
+
+    uploadBtn.addEventListener('click', () => {
+
+      const fileInput = document.createElement('input');
+
+      fileInput.type = 'file';
+      fileInput.accept = 'image/png';
+
+      fileInput.onchange = () => {
+
+        const file = fileInput.files[0];
+
+        if (!file) return;
+
+        if (file.type !== 'image/png') {
+          alert(t("pngOnly"));
+          return;
+        }
+
+        const reader = new FileReader();
+
+        reader.onload = (e) => {
+
+          currentWatermarkImage = e.target.result;
+
+          localStorage.setItem('watermarkImage', currentWatermarkImage);
+
+          updateStatus();
+
+          renderPreviewGrid(percentageInput.value);
+
+        };
+
+        reader.readAsDataURL(file);
+      };
+
+      fileInput.click();
+
+    });
+
+    removeBtn.addEventListener('click', () => {
+
+      currentWatermarkImage = null;
+
+      localStorage.removeItem('watermarkImage');
+
+      updateStatus();
+
+      renderPreviewGrid(percentageInput.value);
+
+    });
+
+  });
+}
+
+
+
+// 绑定按钮事件
+document.querySelector('.settingWatermark')?.addEventListener('click', () => {
+  openWatermarkSizeModal();
+});
+
 // 页面加载初始化
 window.addEventListener('DOMContentLoaded', () => {
+  initWatermarkSize();
   initThumbnailSize();
 });

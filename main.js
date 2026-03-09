@@ -65,6 +65,7 @@ function createAppMenu() {
       setting: '设置',
       langSwitch: '切换为 English',
       aboutMsg: 'Minio图片管理系统\n© 2025 MMOO.FUN, All rights reserved.',
+
       ok: '确定'
     },
     en: {
@@ -78,6 +79,7 @@ function createAppMenu() {
       setting: 'Setting',
       langSwitch: 'Switch to 中文',
       aboutMsg: 'Minio Image Manager\n© 2025 MMOO.FUN, All rights reserved.',
+
       ok: 'OK'
     }
   }[currentLang];

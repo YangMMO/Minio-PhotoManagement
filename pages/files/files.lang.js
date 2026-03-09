@@ -52,7 +52,7 @@ const filesLang = {
     // 文件内容区域
     noFilesInDir: "当前目录无缩略图",
     noFiles: "无缩略图",
-    supportTip: "仅支持查看图片格式文件，original 与 thumb 的照片将根据操作自动同步"
+    supportTip: "仅支持查看图片格式文件，原图与自动生成的照片将根据操作自动同步"
   },
   en: {
     // 页面标题
@@ -106,7 +106,7 @@ const filesLang = {
     // 文件内容区域
     noFilesInDir: "No thumbnails in current directory",
     noFiles: "No thumbnails",
-    supportTip: "Only image format files are supported. Original and thumb photos will be automatically synchronized based on operations"
+    supportTip: "Only supports viewing image format files. Original and other automatically generated photos will be automatically synchronized according to the operation"
   }
 };
 

@@ -34,7 +34,13 @@
       <div class="content-header">
         <div class="content-title" data-i18n="selectFolder">请选择目录</div>
         <div class="content-actions">
-          <!-- 未来可添加按钮 -->
+          <!-- 水印预览图尺寸 -->
+          <button class="settingWatermark">
+            <span data-i18n="WatermarkSize">水印预览图尺寸:</span>
+            <span id="watermarkSizeDisplay"></span>
+            <span><i class="ri-edit-line"></i></span>
+          </button>
+
           <button class="settingSize">
             <span data-i18n="ThumbnailSize">缩略图尺寸:</span>
             <span id="sizeDisplay"></span>
@@ -63,7 +69,7 @@
       </div>
     
       <div class="content-footer" data-i18n="supportTip">
-        仅支持查看图片格式文件，original 与 thumb 的照片将根据操作自动同步
+        仅支持查看图片格式文件，原图与自动生成的照片将根据操作自动同步
       </div>
     </div>
     
@@ -113,6 +119,8 @@
         </label>
         <div id="fileInfo" class="file-info-text" data-i18n="NoFolders">尚未选择任何文件夹</div>
       </div>
+
+      <div class="upload-tips"  data-i18n="uploadTips">为保证上传顺畅，请将单张图片大小控制在（20MB）以内。</div>
   
       <div id="uploadActionButtons" class="modal-actions">
         <button id="uploadConfirmBtn" class="btn primary" data-i18n="upload">上传</button>
@@ -133,16 +141,24 @@
       <div class="image-info-box">
         <div id="infoFilename"></div>
         <div id="infoTime"></div>
-      
-        <div class="infoThumbBox">
-          <span id="infoThumbSize"></span>
-          <span id="infoThumbDim" style="margin-left: 8px;"></span>
+
+        <div class="imageInfoBox">
+          <div class="infoOriginalBox">
+            <span id="infoOriginalSize"></span>
+            <span id="infoOriginalDim" style="margin-left: 8px;"></span>
+          </div>
+        
+          <div class="infoThumbBox">
+            <span id="infoThumbSize"></span>
+            <span id="infoThumbDim" style="margin-left: 8px;"></span>
+          </div>
+
+          <div class="infoWatermarkBox">
+            <span id="infoWatermarkSize"></span>
+            <span id="infoWatermarkDim" style="margin-left: 8px;"></span>
+          </div>
         </div>
-      
-        <div class="infoOriginalBox">
-          <span id="infoOriginalSize"></span>
-          <span id="infoOriginalDim" style="margin-left: 8px;"></span>
-        </div>
+
       </div>
       <button onclick="closeImagePreview()"><i class="ri-close-large-fill"></i></button>
     </div>

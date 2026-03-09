@@ -24,8 +24,10 @@ const filesLang = {
     Time: "时间",
     Thumbnail: "缩略图",
     OriginalImage: "原图",
+    watermarkImage: "水印图",
     ViewOriginalImage: "查看原图",
     currentDirectoryNull: "当前目录无缩略图",
+    Not: "无",
   },
   en: {
     NoFolders: "No folders have been selected yet",
@@ -49,9 +51,11 @@ const filesLang = {
     SizeLoading: ", Size loading...",
     Time: "Time",
     Thumbnail: "Thumbnail",
-    OriginalImage: "Original image",
+    OriginalImage: "Original",
+    watermarkImage: "Watermark",
     ViewOriginalImage: "View the original image",
     currentDirectoryNull: "There are no thumbnails in the current directory",
+    Not: "Not",
   }
 };
 
@@ -105,6 +109,7 @@ let sortAsc = true;     // 正序/倒序
 const contentBody = document.querySelector('.content-body');
 const contentToolbar = document.querySelector('.content-toolbar');
 
+// 监听工具栏宽度变化
 function updateToolbarLayout(entry) {
   const width = entry.contentRect.width;
   if (width < 800) {
@@ -190,6 +195,86 @@ function createThumbnail(file, maxSize) {
   });
 }
 
+// 生成水印图
+function createWatermarkedImage(file) {
+  return new Promise((resolve, reject) => {
+
+    const maxSize = parseInt(localStorage.getItem('watermarkMaxSize'), 10) || 1200;
+    const watermarkImage = localStorage.getItem('watermarkImage');
+
+    const percentage = parseInt(localStorage.getItem('percentage'), 10) || 4;
+    const transparency = parseInt(localStorage.getItem('transparency'), 10) || 80;
+
+    if (!watermarkImage) {
+      reject(new Error('没有设置水印图片'));
+      return;
+    }
+
+    const img = new Image();
+    const watermark = new Image();
+
+    const url = URL.createObjectURL(file);
+
+    img.onload = () => {
+
+      let { width, height } = img;
+
+      if (width > height && width > maxSize) {
+        height *= maxSize / width;
+        width = maxSize;
+      } else if (height >= width && height > maxSize) {
+        width *= maxSize / height;
+        height = maxSize;
+      }
+
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+
+      const ctx = canvas.getContext('2d');
+
+      // 先画原图
+      ctx.drawImage(img, 0, 0, width, height);
+
+      watermark.onload = () => {
+
+        const wmWidth = width / percentage;
+        const scale = wmWidth / watermark.width;
+        const wmHeight = watermark.height * scale;
+
+        ctx.globalAlpha = transparency / 100;
+
+        ctx.drawImage(
+          watermark,
+          0,
+          0,
+          wmWidth,
+          wmHeight
+        );
+
+        ctx.globalAlpha = 1;
+
+        canvas.toBlob(
+          (blob) => blob ? resolve(blob) : reject(new Error('水印图生成失败')),
+          'image/jpeg',
+          0.9
+        );
+
+        URL.revokeObjectURL(url);
+      };
+
+      watermark.onerror = reject;
+      watermark.src = watermarkImage;
+    };
+
+    img.onerror = (e) => {
+      URL.revokeObjectURL(url);
+      reject(e);
+    };
+
+    img.src = url;
+  });
+}
 
 // 判断图片
 function isImageFile(name) {
@@ -249,6 +334,7 @@ document.getElementById('uploadCancelBtn').onclick = closeUploadDialog;
 // upload finish
 uploadFinishBtn.onclick = closeUploadDialog;
 
+// 获取文件 MIME
 function getMimeType(filename) {
   const ext = filename.toLowerCase().split('.').pop();
   switch (ext) {
@@ -318,6 +404,17 @@ async function handleUploadConfirmClick() {
         'content-type': mime
       });
 
+      // 生成并上传水印图
+      const wb = await createWatermarkedImage(f);
+      const wbuf = Buffer.from(await wb.arrayBuffer());
+
+      const watermarkPrefix = uploadPrefix.replace(/original\/?$/, 'watermark/');
+
+      await minioClient.putObject(uploadBucket, watermarkPrefix + f.name, wbuf, wbuf.length, {
+          'content-type': mime
+        }
+      );
+
       successCount++;
 
     } catch (e) {
@@ -340,10 +437,12 @@ async function handleUploadConfirmClick() {
 
 let uploadBound = false;
 
+// 绑定上传确认按钮
 function initUploadConfirmEvent(){ 
   uploadConfirmBtn.onclick = handleUploadConfirmClick;
 }
 
+// 确认弹窗
 function openConfirmModal(message) {
   return new Promise((resolve) => {
     confirmMessage.textContent = message;
@@ -405,49 +504,95 @@ if(deleteBtn){ deleteBtn.onclick=async()=>{
   }, 1000);
 }
 
+// 图片预览
 async function previewImage(itemName) {
+
   const basePrefix = currentPrefix.replace(/thumb\/?$/, '');
   const thumbPath = basePrefix + 'thumb/' + itemName;
   const originalPath = basePrefix + 'original/' + itemName;
+  const watermarkPath = basePrefix + 'watermark/' + itemName;
 
   const thumbUrl = `http://${config.endPoint}:${config.port}/${currentBucket}/${thumbPath}`;
   const originalUrl = `http://${config.endPoint}:${config.port}/${currentBucket}/${originalPath}`;
+  const watermarkUrl = `http://${config.endPoint}:${config.port}/${currentBucket}/${watermarkPath}`;
 
-  // 显示图片
   const img = document.getElementById('previewImage');
-  img.src = originalUrl;
 
-  // 展示弹窗
   const viewer = document.getElementById('imagePreviewer');
   viewer.style.display = 'flex';
 
-  // 文件名
   document.getElementById('infoFilename').textContent = `${itemName}`;
 
-  // 设置尺寸信息初始为加载中
+  const thumbBox = document.querySelector('.infoThumbBox');
+  const originalBox = document.querySelector('.infoOriginalBox');
+  const watermarkBox = document.querySelector('.infoWatermarkBox');
+
+  const setActive = (box) => {
+    thumbBox.classList.remove('infoActive');
+    originalBox.classList.remove('infoActive');
+    watermarkBox.classList.remove('infoActive');
+    box.classList.add('infoActive');
+  };
+
+  // 默认显示原图
+  img.src = originalUrl;
+  setActive(originalBox);
+
+  // 初始化
   document.getElementById('infoThumbDim').textContent = t("SizeLoading");
   document.getElementById('infoOriginalDim').textContent = t("SizeLoading");
+  document.getElementById('infoWatermarkDim').textContent = t("SizeLoading");
 
   try {
+
     const [thumbStat, originalStat] = await Promise.all([
       minioClient.statObject(currentBucket, thumbPath),
       minioClient.statObject(currentBucket, originalPath)
     ]);
 
-    // 上传时间来自 original
     document.getElementById('infoTime').innerHTML =
-      `<i class="ri-time-fill"></i> ${t("Time")}：${new Date(originalStat.lastModified).toLocaleString()}`;
+      `${new Date(originalStat.lastModified).toLocaleString()}`;
 
     document.getElementById('infoThumbSize').innerHTML =
       `<i class="ri-file-image-fill"></i> ${t("Thumbnail")}：${(thumbStat.size / 1024).toFixed(1)} KB`;
 
     document.getElementById('infoOriginalSize').innerHTML =
       `<i class="ri-file-image-fill"></i> ${t("OriginalImage")}：${(originalStat.size / 1024).toFixed(1)} KB`;
+
   } catch (err) {
     console.error('获取文件信息失败:', err);
   }
 
-  // 获取尺寸（使用 Image 对象）
+  // watermark 可能不存在
+  let watermarkExists = true;
+
+  try {
+
+    const watermarkStat = await minioClient.statObject(currentBucket, watermarkPath);
+
+    document.getElementById('infoWatermarkSize').innerHTML =
+      `<i class="ri-file-image-fill"></i> ${t("watermarkImage")}：${(watermarkStat.size / 1024).toFixed(1)} KB`;
+
+    const watermarkImg = new Image();
+    watermarkImg.src = watermarkUrl;
+
+    watermarkImg.onload = () => {
+      document.getElementById('infoWatermarkDim').textContent =
+        `, ${watermarkImg.width} × ${watermarkImg.height}`;
+    };
+
+  } catch (err) {
+
+    watermarkExists = false;
+
+    document.getElementById('infoWatermarkSize').innerHTML =
+      `<i class="ri-file-image-fill"></i> ${t("watermarkImage")}：${t("Not")}`;
+
+    document.getElementById('infoWatermarkDim').textContent = '';
+
+  }
+
+  // 尺寸读取
   const thumbImg = new Image();
   thumbImg.src = thumbUrl;
   thumbImg.onload = () => {
@@ -461,8 +606,30 @@ async function previewImage(itemName) {
     document.getElementById('infoOriginalDim').textContent =
       `, ${origImg.width} × ${origImg.height}`;
   };
+
+  // 点击切换
+  thumbBox.onclick = () => {
+    img.src = thumbUrl;
+    setActive(thumbBox);
+  };
+
+  originalBox.onclick = () => {
+    img.src = originalUrl;
+    setActive(originalBox);
+  };
+
+  watermarkBox.onclick = () => {
+
+    if (!watermarkExists) return;
+
+    img.src = watermarkUrl;
+    setActive(watermarkBox);
+  };
 }
 
+
+
+// 关闭图片预览
 function closeImagePreview() {
   document.getElementById('imagePreviewer').style.display = 'none';
 }
@@ -486,7 +653,7 @@ function createImageCard(item, fn, dt) {
   magnifier.title = t('ViewOriginalImage');
   magnifier.onclick = e => {
     e.stopPropagation();
-    let basePrefix = currentPrefix.replace(/thumb\/?$/, 'original/');
+    // let basePrefix = currentPrefix.replace(/thumb\/?$/, 'original/');
     previewImage(item.name);
   };
   card.append(magnifier);
@@ -555,6 +722,7 @@ function renderImageGrid(){
   }};
 }
 
+// 初始化切换监听器
 function initToggleListeners(){ toggleFileName.addEventListener('change',renderImageGrid); toggleDate.addEventListener('change',renderImageGrid); }
 
 // 加载缩略图
@@ -655,8 +823,7 @@ async function loadContent(bucket, prefix) {
 }
 
 
-
-
+// 更新选中数量
 function updateSelectedCount() {
   const selectedCountSpan = document.querySelector('#selectDate span');
   if (selectedCountSpan) {
