@@ -1,0 +1,75 @@
+{
+  "name": "minio_thumb",
+  "version": "1.1.0",
+  "description": "MinIO thumbnail manager built with Electron + Vue 3 + Tailwind CSS",
+  "main": "electron/main.js",
+  "scripts": {
+    "dev": "vite",
+    "start": "node scripts/start-dev.js",
+    "build": "vite build",
+    "preview": "vite build && electron .",
+    "dist": "vite build && electron-builder"
+  },
+  "keywords": [],
+  "author": "MMO",
+  "license": "MIT",
+  "type": "commonjs",
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.0.4",
+    "autoprefixer": "^10.4.19",
+    "concurrently": "^8.2.2",
+    "cross-env": "^10.1.0",
+    "electron": "^28.2.3",
+    "electron-builder": "^26.0.12",
+    "postcss": "^8.4.38",
+    "tailwindcss": "^3.4.3",
+    "vite": "^5.2.8",
+    "wait-on": "^7.2.0"
+  },
+  "dependencies": {
+    "minio": "^8.0.5",
+    "pinia": "^2.1.7",
+    "remixicon": "^4.6.0",
+    "sharp": "^0.34.3",
+    "vue": "^3.4.21",
+    "vue-router": "^4.3.0"
+  },
+  "build": {
+    "appId": "com.mmo.minio_thumb",
+    "productName": "MinioPhotoManager",
+    "executableName": "MinioPhotoManager",
+    "afterPack": "scripts/after-pack.js",
+    "directories": {
+      "buildResources": "assets",
+      "output": "dist"
+    },
+    "files": [
+      "app/**/*",
+      "electron/**/*",
+      "assets/**/*",
+      "package.json",
+      "!node_modules/.cache",
+      "!dist{,/**/*}"
+    ],
+    "mac": {
+      "icon": "assets/icon.icns",
+      "target": [
+        "dmg",
+        "zip"
+      ]
+    },
+    "win": {
+      "icon": "assets/icon.ico",
+      "signAndEditExecutable": false,
+      "target": [
+        "nsis",
+        "zip"
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true
+    }
+  }
+}
