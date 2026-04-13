@@ -3,7 +3,7 @@
     <transition name="toast">
       <div 
         v-if="visible"
-        class="toast fixed bottom-5 right-5 z-[30000]"
+        class="toast fixed bottom-5 right-5 z-[60000]"
         :class="toastClasses"
       >
         <div class="flex items-center gap-2">
