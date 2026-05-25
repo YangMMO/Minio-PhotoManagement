@@ -341,7 +341,7 @@ function toggleExpanded(path) {
   setExpanded(path, !expandedPaths.value.has(path))
 }
 
-function buildObjectUrl(objectPath) {
+function buildObjectUrl(objectPath, version) {
   const protocol = authStore.useSSL ? 'https' : 'http'
   const encodedBucket = encodeURIComponent(bucketName.value)
   const encodedPath = objectPath
@@ -350,7 +350,8 @@ function buildObjectUrl(objectPath) {
     .map((segment) => encodeURIComponent(segment))
     .join('/')
 
-  return `${protocol}://${authStore.endPoint}:${authStore.port}/${encodedBucket}/${encodedPath}`
+  const baseUrl = `${protocol}://${authStore.endPoint}:${authStore.port}/${encodedBucket}/${encodedPath}`
+  return version ? `${baseUrl}?v=${encodeURIComponent(version)}` : baseUrl
 }
 
 function isImageFile(name) {
@@ -547,7 +548,7 @@ async function loadImages(path) {
         path: object.name,
         lastModified: object.lastModified,
         size: object.size,
-        url: buildObjectUrl(object.name)
+        url: buildObjectUrl(object.name, object.lastModified)
       }
     })
 }

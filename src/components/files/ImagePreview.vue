@@ -137,7 +137,7 @@ function buildObjectPath(type) {
   return `${basePrefix.value}${type}/${props.image.name}`
 }
 
-function buildObjectUrl(objectPath) {
+function buildObjectUrl(objectPath, version) {
   const protocol = authStore.useSSL ? 'https' : 'http'
   const encodedBucket = encodeURIComponent(props.bucket)
   const encodedPath = objectPath
@@ -146,12 +146,13 @@ function buildObjectUrl(objectPath) {
     .map((segment) => encodeURIComponent(segment))
     .join('/')
 
-  return `${protocol}://${authStore.endPoint}:${authStore.port}/${encodedBucket}/${encodedPath}`
+  const baseUrl = `${protocol}://${authStore.endPoint}:${authStore.port}/${encodedBucket}/${encodedPath}`
+  return version ? `${baseUrl}?v=${encodeURIComponent(version)}` : baseUrl
 }
 
 const currentUrl = computed(() => {
   const objectPath = buildObjectPath(currentType.value)
-  return objectPath ? buildObjectUrl(objectPath) : ''
+  return objectPath ? buildObjectUrl(objectPath, currentInfo.value?.lastModified) : ''
 })
 
 const currentInfo = computed(() => {
@@ -235,7 +236,8 @@ async function loadImageInfo() {
     const thumbResult = await window.electronAPI.minio.statObject(props.bucket, buildObjectPath('thumb'))
     if (thumbResult.success) {
       thumbInfo.value = {
-        size: thumbResult.stat.size
+        size: thumbResult.stat.size,
+        lastModified: thumbResult.stat.lastModified
       }
     }
   } catch (error) {
@@ -247,7 +249,8 @@ async function loadImageInfo() {
     if (watermarkResult.success) {
       watermarkInfo.value = {
         exists: true,
-        size: watermarkResult.stat.size
+        size: watermarkResult.stat.size,
+        lastModified: watermarkResult.stat.lastModified
       }
     } else {
       watermarkInfo.value = { exists: false }
@@ -263,21 +266,21 @@ async function loadDimensions() {
   if (originalInfo.value) {
     originalInfo.value = {
       ...originalInfo.value,
-      dimensions: await probeDimensions(buildObjectUrl(buildObjectPath('original')))
+      dimensions: await probeDimensions(buildObjectUrl(buildObjectPath('original'), originalInfo.value.lastModified))
     }
   }
 
   if (thumbInfo.value) {
     thumbInfo.value = {
       ...thumbInfo.value,
-      dimensions: await probeDimensions(buildObjectUrl(buildObjectPath('thumb')))
+      dimensions: await probeDimensions(buildObjectUrl(buildObjectPath('thumb'), thumbInfo.value.lastModified))
     }
   }
 
   if (watermarkInfo.value?.exists) {
     watermarkInfo.value = {
       ...watermarkInfo.value,
-      dimensions: await probeDimensions(buildObjectUrl(buildObjectPath('watermark')))
+      dimensions: await probeDimensions(buildObjectUrl(buildObjectPath('watermark'), watermarkInfo.value.lastModified))
     }
   }
 }

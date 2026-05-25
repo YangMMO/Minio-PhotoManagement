@@ -589,6 +589,7 @@ ipcMain.handle('system:showOpenDialog', async (_event, options) => {
 ipcMain.handle('image:createThumbnail', async (_event, payload, maxSize) => {
   try {
     const thumbnail = await sharp(toBuffer(payload))
+      .rotate()
       .resize(maxSize, maxSize, {
         fit: 'inside',
         withoutEnlargement: true
@@ -609,7 +610,7 @@ ipcMain.handle('image:createWatermark', async (_event, payload, options = {}) =>
       return { success: false, error: 'No watermark image provided' }
     }
 
-    const baseImage = sharp(toBuffer(payload))
+    const baseImage = sharp(toBuffer(payload)).rotate()
     const metadata = await baseImage.metadata()
     const width = metadata.width || maxSize
     const height = metadata.height || maxSize

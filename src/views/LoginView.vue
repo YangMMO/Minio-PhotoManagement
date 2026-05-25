@@ -58,6 +58,7 @@
 
     <footer class="relative z-[1] mt-5 text-center text-xs text-slate-200/80">
       <a href="https://www.mmoo.fun" target="_self" class="hover:text-primary">© 2025 MMOO.FUN, All rights reserved.</a>
+
     </footer>
   </div>
 </template>
